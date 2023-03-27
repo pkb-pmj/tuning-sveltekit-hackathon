@@ -1,34 +1,31 @@
-import type Fraction from 'fraction.js';
-
-interface Factor {
-	base: number;
-	exp: Fraction;
-}
+import Fraction from 'fraction.js';
 
 export class Interval {
-	private factors: Factor[] = [];
+	private factors: Fraction[] = [];
 
-	constructor(factors: Factor[]) {
-		this.factors = factors;
+	constructor(factors: [number, ...ConstructorParameters<typeof Fraction>][]) {
+		for (const [base, args] of factors) {
+			this.factors[base] = new Fraction(args);
+		}
 	}
 
 	valueOf(): number {
-		return 1;
+		return this.factors.reduce((acc, exp, base) => acc * Math.pow(base, exp.valueOf()), 1);
 	}
 
 	add(other: Interval): Interval {
-		return new Interval(this.factors);
+		return this;
 	}
 
 	sub(other: Interval): Interval {
-		return new Interval(this.factors);
+		return this;
 	}
 
 	mult(value: number): Interval {
-		return new Interval(this.factors);
+		return this;
 	}
 
 	div(value: number): Interval {
-		return new Interval(this.factors);
+		return this;
 	}
 }
