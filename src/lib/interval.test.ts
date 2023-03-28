@@ -1,16 +1,34 @@
 import { expect, test } from 'vitest';
-import { Interval } from './interval';
+import { factorizeFraction, Interval, primes } from './interval';
+import Fraction from 'fraction.js';
 
-test('interval constructor', () => {
-	const interval = new Interval([[2, 1]]);
-	expect(interval.valueOf()).toStrictEqual(2);
+test.each([
+	[
+		'3/2',
+		[
+			[3, 1],
+			[2, -1],
+		],
+	],
+	[
+		'5/4',
+		[
+			[5, 1],
+			[2, -2],
+		],
+	],
+])('factorize fraction', (input, output) => {
+	const factors = factorizeFraction(new Fraction(input));
+	for (const [prime, fraction] of output) {
+		expect(factors[primes.indexOf(prime)]).toEqual(new Fraction(fraction));
+	}
 });
 
 test.each([
-	[1.5, [3, 1], [2, -1]], // perfect fifth
-	[2.25, [5, 1], [4, -1]], // just major third
-	[1.4953487812, [5, 1, 4]], // 1/4 comma meantone fifth
-])('interval valueOf', (expected, ...factors) => {
-	const interval = new Interval(factors as any);
-	expect(interval.valueOf()).toBeCloseTo(expected, 10);
+	['3/2', 1.5], // perfect fifth
+	['5/4', 1.25], // just major third
+	// [1.4953487812, [5, 1, 4]], // 1/4 comma meantone fifth
+])('interval valueOf', (input, output) => {
+	const interval = new Interval(new Fraction(input));
+	expect(interval.valueOf()).toBeCloseTo(output, 10);
 });
