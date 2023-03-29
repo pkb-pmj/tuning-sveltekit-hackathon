@@ -94,3 +94,29 @@ test.each([
 	const expected = new Interval(new Fraction(output));
 	expect(actual.valueOf()).toBeCloseTo(expected.valueOf(), 10);
 });
+
+test.each([
+	['3/2', 2, (3 / 2) ** 2 / 2],
+	['3/2', 4, (3 / 2) ** 4 / 4],
+	['2/3', 3, (2 / 3) ** 3 * 2],
+	['2/3', 4, (2 / 3) ** 4 * 4],
+	['2', 2, 1],
+	['1/2', 2, 1],
+])('mult %s * %d', (frac, div, expected) => {
+	const interval1 = new Interval(new Fraction(frac));
+	const actual = interval1.mul(div);
+	expect(actual.valueOf()).toBeCloseTo(expected, 10);
+});
+
+test.each([
+	['3/2', 2, (3 / 2) ** (1 / 2)],
+	['3/2', 4, (3 / 2) ** (1 / 4)],
+	['2/3', 3, (2 / 3) ** (1 / 3)],
+	['2/3', 4, (2 / 3) ** (1 / 4)],
+	['2', 2, 1],
+	['1/2', 2, 1],
+])('div %s / %d', (frac, div, expected) => {
+	const interval1 = new Interval(new Fraction(frac));
+	const actual = interval1.div(div);
+	expect(actual.valueOf()).toBeCloseTo(expected, 10);
+});

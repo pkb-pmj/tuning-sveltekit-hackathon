@@ -67,11 +67,11 @@ export class Interval {
 		return new Interval(this.factors.map((exp, i) => exp.sub(other.factors[i])));
 	}
 
-	mult(value: number): Interval {
-		return this;
+	mul(value: number): Interval {
+		return new Interval(this.factors.map((exp) => exp.mul(value)));
 	}
 
 	div(value: number): Interval {
-		return this;
+		return new Interval(this.factors.map((exp) => exp.div(value)));
 	}
 }
