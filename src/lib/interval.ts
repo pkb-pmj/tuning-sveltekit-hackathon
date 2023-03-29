@@ -60,11 +60,11 @@ export class Interval {
 	}
 
 	add(other: Interval): Interval {
-		return this;
+		return new Interval(this.factors.map((exp, i) => exp.add(other.factors[i])));
 	}
 
 	sub(other: Interval): Interval {
-		return this;
+		return new Interval(this.factors.map((exp, i) => exp.sub(other.factors[i])));
 	}
 
 	mult(value: number): Interval {
