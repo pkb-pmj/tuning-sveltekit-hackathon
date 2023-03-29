@@ -32,15 +32,17 @@ export class Interval {
 	private factors: Fraction[];
 
 	constructor(fraction: Fraction);
+	constructor(num: number | string);
+	constructor(numerator: number, denominator: number);
 	constructor(factors: Fraction[]);
-	constructor(args: Fraction[] | Fraction) {
-		if (Array.isArray(args)) {
-			this.factors = args;
+	constructor(first: Fraction[] | Fraction | number | string, second?: number) {
+		if (Array.isArray(first)) {
+			this.factors = first;
 			while (this.factors.length < primes.length) {
 				this.factors.push(new Fraction(0));
 			}
 		} else {
-			this.factors = factorizeFraction(args);
+			this.factors = factorizeFraction(new Fraction(first, second));
 		}
 		this.normalize();
 	}
