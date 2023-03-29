@@ -1,6 +1,7 @@
 import Fraction from 'fraction.js';
 
 export const primes = [2, 3, 5, 7, 11, 13, 17, 19];
+const logOfPrimes = primes.map((prime) => Math.log2(prime));
 
 export function factorizeFraction(fraction: Fraction): Fraction[] {
 	let { n, d } = fraction;
@@ -41,10 +42,21 @@ export class Interval {
 		} else {
 			this.factors = factorizeFraction(args);
 		}
+		this.normalize();
 	}
 
 	valueOf(): number {
 		return this.factors.reduce((acc, exp, i) => acc * primes[i] ** exp.valueOf(), 1);
+	}
+
+	log2valueOf(): number {
+		return this.factors.reduce((acc, exp, i) => acc + logOfPrimes[i] * exp.valueOf(), 0);
+	}
+
+	normalize() {
+		let logSum = this.log2valueOf();
+		logSum = Math.floor(Math.abs(logSum)) * Math.sign(logSum);
+		this.factors[0] = this.factors[0].sub(logSum);
 	}
 
 	add(other: Interval): Interval {
