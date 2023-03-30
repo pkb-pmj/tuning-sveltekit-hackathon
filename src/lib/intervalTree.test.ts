@@ -69,3 +69,10 @@ test('removing from nested tree', () => {
 	fourth.removeSelf();
 	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '3/2']));
 });
+
+test('removing root node', () => {
+	const tree = intervalTree();
+	let list = get(tree);
+	const [root] = list;
+	expect(() => root.removeSelf()).toThrow("can't remove the root node");
+});
