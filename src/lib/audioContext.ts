@@ -1,7 +1,9 @@
 import { browser } from '$app/environment';
 
-export const audioContext = new AudioContext();
+// live `let` binding - https://stackoverflow.com/a/32558929
+export let audioContext: AudioContext;
 
 if (browser) {
+	audioContext = new AudioContext();
 	window.addEventListener('pointermove', () => audioContext.resume(), { once: true });
 }
