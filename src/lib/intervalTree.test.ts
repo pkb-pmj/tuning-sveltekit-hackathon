@@ -36,3 +36,36 @@ test('flat tree', () => {
 	root.addChild(new Interval('3/4'));
 	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['2/3', '3/4', '1', '4/3', '3/2']));
 });
+
+test('nested tree', () => {
+	const tree = intervalTree();
+	let list = get(tree);
+	const [root] = list;
+	tree.subscribe((value) => (list = value));
+
+	root.addChild(new Interval('4/3'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3']));
+
+	const fourth = list[1];
+	fourth.addChild(new Interval('5/4'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '5/3']));
+
+	root.addChild(new Interval('3/2'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '3/2', '5/3']));
+});
+
+test('removing from nested tree', () => {
+	const tree = intervalTree();
+	let list = get(tree);
+	const [root] = list;
+	tree.subscribe((value) => (list = value));
+
+	root.addChild(new Interval('4/3'));
+	const fourth = list[1];
+	fourth.addChild(new Interval('5/4'));
+	root.addChild(new Interval('3/2'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '3/2', '5/3']));
+
+	fourth.removeSelf();
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '3/2']));
+});
