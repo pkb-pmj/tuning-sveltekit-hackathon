@@ -1,19 +1,13 @@
 <script lang="ts">
 	import type { Readable } from 'svelte/store';
-	import { Interval } from './interval';
+	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import type { Node } from './intervalTree';
 
 	export let tree: Readable<Node[]>;
-
-	let interval: string;
 </script>
 
-<input type="text" bind:value={interval} />
-{#each $tree as node}
-	<li>
-		<span>{node.absInterval().valueOf()}</span>
-		<button on:click={() => node.addChild(new Interval(interval))}>Add child</button>
-		<button on:click={() => node.updateInterval(new Interval(interval))}>Update interval</button>
-		<button on:click={() => node.removeSelf()}>Remove</button>
-	</li>
-{/each}
+<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+	{#each $tree as node}
+		<ChromaticCircleNode {node} />
+	{/each}
+</svg>
