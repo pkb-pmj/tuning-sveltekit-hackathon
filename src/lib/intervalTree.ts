@@ -46,7 +46,7 @@ export function intervalTree(): Readable<Node[]> {
 			notes.forEach((note) => {
 				const index = sorted.indexOf(note);
 				if (index === -1) throw new Error("didn't find self in sorted");
-				sorted.splice(index);
+				sorted.splice(index, 1);
 			});
 			// no need to sort because we only removed some nodes, so the remaining nodes are still sorted
 			set(sorted);
