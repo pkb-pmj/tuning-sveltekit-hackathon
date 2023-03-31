@@ -8,35 +8,36 @@
 	const y = (angle: number) => -Math.cos(angle);
 	const rad = (deg: number) => (Math.PI / 180) * deg;
 	const deg = (deg: number) => (180 / Math.PI) * deg;
+	const pc = (val: number) => `${val * 50}%`;
 
 	const circle = (angle: number, r: number) => ({
-		cx: r * x(angle),
-		cy: r * y(angle),
+		cx: pc(r * x(angle)),
+		cy: pc(r * y(angle)),
 	});
 
 	const line = (angle: number, r1: number, r2: number) => ({
-		x1: r1 * x(angle),
-		y1: r1 * y(angle),
-		x2: r2 * x(angle),
-		y2: r2 * y(angle),
+		x1: pc(r1 * x(angle)),
+		y1: pc(r1 * y(angle)),
+		x2: pc(r2 * x(angle)),
+		y2: pc(r2 * y(angle)),
 	});
 
 	const xy = (angle: number, r: number) => ({
-		x: r * x(angle),
-		y: r * y(angle),
+		x: pc(r * x(angle)),
+		y: pc(r * y(angle)),
 	});
 
 	$: angle = Math.PI * 2 * node.absInterval().log2valueOf();
 </script>
 
-<line {...line(angle, 0, 70)} />
+<line {...line(angle, 0, 0.7)} />
 <circle
-	{...circle(angle, 70)}
+	{...circle(angle, 0.7)}
 	r="10"
 	on:click={() => (current = node)}
 	class:active={current === node}
 />
-<foreignObject {...xy(angle, 40)}>
+<foreignObject {...xy(angle, 0.6)}>
 	<span>{node.absInterval().valueOf()}</span>
 </foreignObject>
 
@@ -49,8 +50,8 @@
 		fill: green;
 	}
 	foreignObject {
-		width: 30px;
-		height: 20px;
-		transform: translate(-15px, -10px);
+		width: 2em;
+		height: 1em;
+		transform: translate(-1em, -0.5em);
 	}
 </style>
