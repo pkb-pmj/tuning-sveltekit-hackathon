@@ -4,6 +4,7 @@ import { Interval } from './interval';
 export interface Node {
 	addChild(interval: Interval): void;
 	removeSelf(): void;
+	getInterval(): Interval;
 	updateInterval(interval: Interval): void;
 	absInterval(): Interval;
 }
@@ -50,6 +51,10 @@ export function intervalTree(): Readable<Node[]> {
 			});
 			// no need to sort because we only removed some nodes, so the remaining nodes are still sorted
 			set(sorted);
+		}
+
+		getInterval() {
+			return this.interval;
 		}
 
 		updateInterval(interval: Interval) {

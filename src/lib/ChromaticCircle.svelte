@@ -14,7 +14,7 @@
 	const min = (a: number, b: number) => (a < b ? a : b);
 
 	let svg: SVGSVGElement;
-	let size: number = -100;
+	let size: number = 100;
 	$: viewBox = `${-size / 2} ${-size / 2} ${size} ${size}`;
 
 	if (browser) {
@@ -38,6 +38,6 @@
 {/if}
 <svg xmlns="http://www.w3.org/2000/svg" {viewBox} bind:this={svg}>
 	{#each $tree as node}
-		<ChromaticCircleNode {node} bind:current />
+		<ChromaticCircleNode {node} bind:current {size} />
 	{/each}
 </svg>
