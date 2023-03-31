@@ -32,9 +32,9 @@
 
 {#if current}
 	<input type="text" bind:value={interval} />
-	<button on:click={() => current?.addChild(new Interval(interval))}>Add child</button>
-	<button on:click={() => current?.updateInterval(new Interval(interval))}>Update interval</button>
-	<button on:click={() => current?.removeSelf()}>Remove</button>
+	<button on:click={() => current.addChild(new Interval(interval))}>Add child</button>
+	<button on:click={() => current.updateInterval(new Interval(interval))}>Update interval</button>
+	<button on:click={() => current.removeSelf()}>Remove</button>
 {/if}
 <svg xmlns="http://www.w3.org/2000/svg" {viewBox} bind:this={svg}>
 	{#each $tree as node}
