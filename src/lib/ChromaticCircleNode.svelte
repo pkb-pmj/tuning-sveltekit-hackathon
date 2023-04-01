@@ -1,8 +1,11 @@
 <script lang="ts">
 	import type { Node } from './intervalTree';
+	import type { KeyboardStore } from './keyboard';
+	import SoundGenerator from './SoundGenerator.svelte';
 
 	export let node: Node;
 	export let current: Node;
+	export let keyboard: KeyboardStore;
 
 	$: active = current === node;
 
@@ -16,8 +19,14 @@
 	$: radius = ((start + 1) % 1) * 60;
 	$: dashArray = `${delta} ${1 - delta}`;
 	$: midpoint = start + delta / 2;
+
+	$: frequency = node.absInterval().normalized().valueOf() * 256;
+	$: keyIndex = Math.round(node.absInterval().normalized().log2valueOf() * 12 + 12) % 12;
 </script>
 
+{#if $keyboard[keyIndex].pressed}
+	<SoundGenerator {frequency} />
+{/if}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <g class="wrapper" on:click={activate} class:active>
 	<g class="transform" style:transform="rotate({absAngle}turn)">

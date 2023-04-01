@@ -4,8 +4,10 @@
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import { Interval } from './interval';
 	import type { Node } from './intervalTree';
+	import type { KeyboardStore } from './keyboard';
 
 	export let tree: Readable<Node[]>;
+	export let keyboard: KeyboardStore;
 
 	let current: Node = get(tree)[0];
 	let interval: string;
@@ -31,7 +33,7 @@
 	</g>
 	<g>
 		{#each $tree as node (node.id)}
-			<ChromaticCircleNode {node} bind:current />
+			<ChromaticCircleNode {node} {keyboard} bind:current />
 		{/each}
 	</g>
 </svg>
