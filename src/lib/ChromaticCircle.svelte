@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { onDestroy, onMount } from 'svelte';
 	import { get, type Readable } from 'svelte/store';
+	import CentLine from './CentLine.svelte';
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import { Interval } from './interval';
 	import type { Node } from './intervalTree';
@@ -28,6 +29,10 @@
 			resizeObserver.disconnect();
 		});
 	}
+
+	const cents = Array(240)
+		.fill(0)
+		.map((_, i) => i * 5);
 </script>
 
 {#if current}
@@ -37,6 +42,9 @@
 	<button on:click={() => current.removeSelf()}>Remove</button>
 {/if}
 <svg xmlns="http://www.w3.org/2000/svg" {viewBox} bind:this={svg}>
+	{#each cents as i}
+		<CentLine {i} />
+	{/each}
 	{#each $tree as node}
 		<ChromaticCircleNode {node} bind:current {size} />
 	{/each}
