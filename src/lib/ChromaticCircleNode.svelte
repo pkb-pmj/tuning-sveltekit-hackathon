@@ -7,11 +7,11 @@
 	$: active = current === node;
 
 	const activate = () => (current = node);
-
-	$: absAngle = Math.PI * 2 * node.absInterval().log2valueOf();
-	$: relAngle = Math.PI * 2 * node.getInterval().log2valueOf();
-
 	const TWO_PI = Math.PI * 2;
+
+	$: absAngle = TWO_PI * node.absInterval().log2valueOf();
+	$: relAngle = TWO_PI * node.getInterval().log2valueOf();
+
 	$: delta = Math.abs(relAngle);
 	$: start = absAngle - (relAngle > 0 ? delta : 0) - TWO_PI / 4;
 	$: radius = ((start + TWO_PI) % TWO_PI) * 10;
