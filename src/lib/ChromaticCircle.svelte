@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { onDestroy, onMount } from 'svelte';
 	import { get, type Readable } from 'svelte/store';
 	import CentLine from './CentLine.svelte';
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
@@ -11,24 +9,6 @@
 
 	let current: Node = get(tree)[0];
 	let interval: string;
-
-	const min = (a: number, b: number) => (a < b ? a : b);
-
-	let svg: SVGSVGElement;
-	let size: number = 100;
-	$: viewBox = `${-size / 2} ${-size / 2} ${size} ${size}`;
-
-	if (browser) {
-		const resizeObserver = new ResizeObserver(() => {
-			if (svg) size = min(svg.clientWidth, svg.clientHeight);
-		});
-		onMount(() => {
-			resizeObserver.observe(svg);
-		});
-		onDestroy(() => {
-			resizeObserver.disconnect();
-		});
-	}
 
 	const cents = Array(240)
 		.fill(0)
@@ -41,11 +21,15 @@
 	<button on:click={() => current.updateInterval(new Interval(interval))}>Update interval</button>
 	<button on:click={() => current.removeSelf()}>Remove</button>
 {/if}
-<svg xmlns="http://www.w3.org/2000/svg" {viewBox} bind:this={svg}>
-	{#each cents as i}
-		<CentLine {i} />
-	{/each}
-	{#each $tree as node}
-		<ChromaticCircleNode {node} bind:current {size} />
-	{/each}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+	<g>
+		{#each cents as i}
+			<CentLine {i} />
+		{/each}
+	</g>
+	<g>
+		{#each $tree as node (node.id)}
+			<ChromaticCircleNode {node} bind:current />
+		{/each}
+	</g>
 </svg>

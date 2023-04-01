@@ -1,10 +1,8 @@
 <script lang="ts">
 	import type { Node } from './intervalTree';
-	import { arc, circle, line, xy } from './utils';
 
 	export let node: Node;
 	export let current: Node;
-	export let size: number;
 
 	$: active = current === node;
 
@@ -12,49 +10,76 @@
 
 	$: absAngle = Math.PI * 2 * node.absInterval().log2valueOf();
 	$: relAngle = Math.PI * 2 * node.getInterval().log2valueOf();
-	$: r = absAngle / 8;
-	$: d = arc(absAngle, -relAngle, (r * size) / 2);
+
+	const TWO_PI = Math.PI * 2;
+	$: delta = Math.abs(relAngle);
+	$: start = absAngle - (relAngle > 0 ? delta : 0) - TWO_PI / 4;
+	$: radius = ((start + TWO_PI) % TWO_PI) * 10;
+	$: dashArray = `${delta} ${TWO_PI - delta}`;
+	$: midpoint = start + delta / 2;
 </script>
 
-<g on:click={activate} class:active>
-	<line {...line(absAngle, 0, 0.74)} />
-	<line {...line(absAngle, 0.86, 0.92)} />
-	<circle {...circle(absAngle, 0.8)} r="3%" />
-	<path class="arc" {d} />
-	<text class="interval" {...xy(absAngle - relAngle / 2, r)}>{node.getInterval().valueOf()}</text>
-	<text class="valueOf" {...xy(absAngle, 0.8)}>{node.absInterval().valueOf()}</text>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<g class="wrapper" on:click={activate} class:active>
+	<g class="transform" style:transform="rotate({absAngle}rad)">
+		<line x1="0" y1="0" x2="0" y2="-74" />
+		<line x1="0" y1="-86" x2="0" y2="-92" />
+		<circle cx="0" cy="-80" r="6" />
+		<text style:transform="translate(0, -80px) rotate({-absAngle}rad)" class="transform">
+			{node.absInterval().valueOf()}
+		</text>
+	</g>
+	<circle
+		class="arc"
+		cx="0"
+		cy="0"
+		r={radius}
+		pathLength={TWO_PI}
+		stroke-dasharray={dashArray}
+		style:transform="rotate({start}rad)"
+	/>
+	<text
+		class="interval transform"
+		style:transform="rotate({midpoint}rad) translate({radius}px) rotate({-midpoint}rad)"
+	>
+		{node.getInterval().valueOf()}
+	</text>
 </g>
 
 <style>
-	g {
+	g.wrapper {
 		--color: #04f4;
 	}
-	g:hover {
+	g.wrapper:hover {
 		--color: #04fa;
 	}
-	g.active {
+	g.wrapper.active {
 		--color: #0c04;
 	}
-	g.active:hover {
+	g.wrapper.active:hover {
 		--color: #0c0a;
+	}
+	.transform {
+		transition: transform 1s;
 	}
 	line {
 		stroke: black;
-		stroke-width: 1px;
+		stroke-width: 0.4px;
 	}
 	circle {
 		stroke: black;
-		stroke-width: 1px;
+		stroke-width: 0.4px;
 		fill: var(--color);
 		transition: fill 0.1s;
 	}
-	.arc {
+	circle.arc {
 		stroke: var(--color);
-		stroke-width: 1em;
+		stroke-width: 4px;
 		fill: none;
-		transition: stroke 0.1s;
+		transition: stroke 0.1s, transform 1s, stroke-dasharray 1s, r 1s;
 	}
 	text {
+		font-size: 4px;
 		text-anchor: middle;
 		dominant-baseline: middle;
 	}

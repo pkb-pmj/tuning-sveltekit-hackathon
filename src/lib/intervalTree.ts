@@ -7,15 +7,18 @@ export interface Node {
 	getInterval(): Interval;
 	updateInterval(interval: Interval): void;
 	absInterval(): Interval;
+	readonly id: number;
 }
 
 export function intervalTree(): Readable<Node[]> {
+	let id = 0;
 	const sorted: Node[] = [];
 
 	class Node {
 		private interval: Interval;
 		private parent: Node | null;
 		private children: Node[] = [];
+		id = id++;
 
 		constructor(interval: Interval, parent: Node | null) {
 			this.interval = interval;
