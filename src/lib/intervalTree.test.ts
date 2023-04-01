@@ -8,7 +8,7 @@ function intervalsFromStrings(fractions: string[]): Interval[] {
 }
 
 function intervalsFromNodes(nodes: Node[]): Interval[] {
-	return nodes.map((node) => node.absInterval());
+	return nodes.map((node) => node.absInterval()).sort((a, b) => a.valueOf() - b.valueOf());
 }
 
 test('only root', () => {
