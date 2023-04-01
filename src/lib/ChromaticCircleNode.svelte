@@ -7,25 +7,24 @@
 	$: active = current === node;
 
 	const activate = () => (current = node);
-	const TWO_PI = Math.PI * 2;
 
-	$: absAngle = TWO_PI * node.absInterval().log2valueOf();
-	$: relAngle = TWO_PI * node.getInterval().log2valueOf();
+	$: absAngle = node.absInterval().log2valueOf();
+	$: relAngle = node.getInterval().log2valueOf();
 
 	$: delta = Math.abs(relAngle);
-	$: start = absAngle - (relAngle > 0 ? delta : 0) - TWO_PI / 4;
-	$: radius = ((start + TWO_PI) % TWO_PI) * 10;
-	$: dashArray = `${delta} ${TWO_PI - delta}`;
+	$: start = absAngle - (relAngle > 0 ? delta : 0) - 1 / 4;
+	$: radius = ((start + 1) % 1) * 60;
+	$: dashArray = `${delta} ${1 - delta}`;
 	$: midpoint = start + delta / 2;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <g class="wrapper" on:click={activate} class:active>
-	<g class="transform" style:transform="rotate({absAngle}rad)">
+	<g class="transform" style:transform="rotate({absAngle}turn)">
 		<line x1="0" y1="0" x2="0" y2="-74" />
 		<line x1="0" y1="-86" x2="0" y2="-92" />
 		<circle cx="0" cy="-80" r="6" />
-		<text style:transform="translate(0, -80px) rotate({-absAngle}rad)" class="transform">
+		<text style:transform="translate(0, -80px) rotate({-absAngle}turn)" class="transform">
 			{node.absInterval().normalized().valueOf()}
 		</text>
 	</g>
@@ -34,13 +33,13 @@
 		cx="0"
 		cy="0"
 		r={radius}
-		pathLength={TWO_PI}
+		pathLength={1}
 		stroke-dasharray={dashArray}
-		style:transform="rotate({start}rad)"
+		style:transform="rotate({start}turn)"
 	/>
 	<text
 		class="interval transform"
-		style:transform="rotate({midpoint}rad) translate({radius}px) rotate({-midpoint}rad)"
+		style:transform="rotate({midpoint}turn) translate({radius}px) rotate({-midpoint}turn)"
 	>
 		{node.getInterval().valueOf()}
 	</text>
