@@ -12,7 +12,7 @@ export interface Node {
 
 export function intervalTree(): Readable<Node[]> {
 	let id = 0;
-	const sorted: Node[] = [];
+	const nodes: Node[] = [];
 
 	class Node {
 		private interval: Interval;
@@ -28,9 +28,8 @@ export function intervalTree(): Readable<Node[]> {
 		addChild(interval: Interval) {
 			const child = new Node(interval, this);
 			this.children.push(child);
-			sorted.push(child);
-			sorted.sort((a, b) => a.absInterval().log2valueOf() - b.absInterval().log2valueOf());
-			set(sorted);
+			nodes.push(child);
+			set(nodes);
 		}
 
 		removeSelf() {
@@ -48,12 +47,12 @@ export function intervalTree(): Readable<Node[]> {
 				node.children.forEach((child) => queue.push(child));
 			}
 			notes.forEach((note) => {
-				const index = sorted.indexOf(note);
+				const index = nodes.indexOf(note);
 				if (index === -1) throw new Error("didn't find self in sorted");
-				sorted.splice(index, 1);
+				nodes.splice(index, 1);
 			});
 			// no need to sort because we only removed some nodes, so the remaining nodes are still sorted
-			set(sorted);
+			set(nodes);
 		}
 
 		getInterval() {
@@ -62,8 +61,7 @@ export function intervalTree(): Readable<Node[]> {
 
 		updateInterval(interval: Interval) {
 			this.interval = interval;
-			sorted.sort((a, b) => a.absInterval().log2valueOf() - b.absInterval().log2valueOf());
-			set(sorted);
+			set(nodes);
 		}
 
 		absInterval() {
@@ -77,8 +75,8 @@ export function intervalTree(): Readable<Node[]> {
 		}
 	}
 
-	sorted.push(new Node(new Interval(1), null));
-	const { set, subscribe } = writable(sorted);
+	nodes.push(new Node(new Interval(1), null));
+	const { set, subscribe } = writable(nodes);
 
 	return { subscribe };
 }
