@@ -26,7 +26,7 @@
 		<line x1="0" y1="-86" x2="0" y2="-92" />
 		<circle cx="0" cy="-80" r="6" />
 		<text style:transform="translate(0, -80px) rotate({-absAngle}rad)" class="transform">
-			{node.absInterval().valueOf()}
+			{node.absInterval().normalized().valueOf()}
 		</text>
 	</g>
 	<circle

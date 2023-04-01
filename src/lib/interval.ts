@@ -44,7 +44,6 @@ export class Interval {
 		} else {
 			this.factors = factorizeFraction(new Fraction(first, second));
 		}
-		this.normalize();
 	}
 
 	valueOf(): number {
@@ -59,6 +58,12 @@ export class Interval {
 		let logSum = this.log2valueOf();
 		logSum = Math.floor(Math.abs(logSum)) * Math.sign(logSum);
 		this.factors[0] = this.factors[0].sub(logSum);
+	}
+
+	normalized(): Interval {
+		const interval = new Interval(this.factors);
+		interval.normalize();
+		return interval;
 	}
 
 	add(other: Interval): Interval {
