@@ -12,30 +12,31 @@
 
 	$: absAngle = Math.PI * 2 * node.absInterval().log2valueOf();
 	$: relAngle = Math.PI * 2 * node.getInterval().log2valueOf();
-	$: d = arc(absAngle, -relAngle, ((absAngle / 8) * size) / 2);
+	$: r = absAngle / 8;
+	$: d = arc(absAngle, -relAngle, (r * size) / 2);
 </script>
 
 <g on:click={activate} class:active>
-	<line {...line(absAngle, 0, 0.7)} />
-	<circle {...circle(absAngle, 0.76)} r="3%" />
+	<line {...line(absAngle, 0, 0.74)} />
+	<line {...line(absAngle, 0.86, 0.92)} />
+	<circle {...circle(absAngle, 0.8)} r="3%" />
 	<path class="arc" {d} />
-	<foreignObject class="valueOf" {...xy(absAngle, 0.6)}>
-		<span>{node.absInterval().valueOf()}</span>
-	</foreignObject>
+	<text class="interval" {...xy(absAngle - relAngle / 2, r)}>{node.getInterval().valueOf()}</text>
+	<text class="valueOf" {...xy(absAngle, 0.8)}>{node.absInterval().valueOf()}</text>
 </g>
 
 <style>
 	g {
-		--color: #0c04;
-	}
-	g:hover {
-		--color: #0c0a;
-	}
-	g.active {
 		--color: #04f4;
 	}
-	g.active:hover {
+	g:hover {
 		--color: #04fa;
+	}
+	g.active {
+		--color: #0c04;
+	}
+	g.active:hover {
+		--color: #0c0a;
 	}
 	line {
 		stroke: black;
@@ -49,22 +50,12 @@
 	}
 	.arc {
 		stroke: var(--color);
-		stroke-width: 0.5em;
+		stroke-width: 1em;
 		fill: none;
 		transition: stroke 0.1s;
 	}
-	foreignObject {
-		width: var(--width);
-		height: var(--height);
-		translate: calc(var(--width) / -2) calc(var(--height) / -2);
-	}
-	.valueOf {
-		--width: 2em;
-		--height: 1em;
-	}
-	.add,
-	.remove {
-		--width: 1.2em;
-		--height: 1.2em;
+	text {
+		text-anchor: middle;
+		dominant-baseline: middle;
 	}
 </style>
