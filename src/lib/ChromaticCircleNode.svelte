@@ -1,11 +1,11 @@
 <script lang="ts">
+	import type { Readable } from 'svelte/store';
 	import type { Node } from './intervalTree';
-	import type { KeyboardStore } from './keyboard';
 	import SoundGenerator from './SoundGenerator.svelte';
 
 	export let node: Node;
 	export let current: Node;
-	export let keyboard: KeyboardStore;
+	export let playing: Readable<Node[]>;
 	export let i: number;
 
 	$: active = current === node;
@@ -20,14 +20,14 @@
 	$: radius = (12 - i) * 5;
 
 	$: frequency = node.absInterval().normalized().valueOf() * 256;
-	$: keyIndex = Math.round(node.absInterval().normalized().log2valueOf() * 12 + 12) % 12;
+	$: isPlaying = $playing.indexOf(node) !== -1;
 </script>
 
-{#if $keyboard[keyIndex].pressed}
+{#if isPlaying}
 	<SoundGenerator {frequency} />
 {/if}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<g class="wrapper" on:click={activate} class:active>
+<g class="wrapper" on:click={activate} class:active class:isPlaying>
 	<g class="transform" style:transform="rotate({absAngle}turn)">
 		<line x1="0" y1="0" x2="0" y2="-68" />
 		<line x1="0" y1="-80" x2="0" y2="-84" />
@@ -66,6 +66,12 @@
 	}
 	g.wrapper.active:hover {
 		--color: #0c0a;
+	}
+	g.wrapper.isPlaying {
+		--color: #cc04;
+	}
+	g.wrapper.isPlaying:hover {
+		--color: #cc0a;
 	}
 	.transform {
 		transition: transform 1s;
