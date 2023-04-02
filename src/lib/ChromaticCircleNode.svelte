@@ -14,11 +14,9 @@
 	$: absAngle = node.absInterval().log2valueOf();
 	$: relAngle = node.getInterval().log2valueOf();
 
-	$: delta = Math.abs(relAngle);
-	$: start = absAngle - (relAngle > 0 ? delta : 0) - 1 / 4;
+	$: start = absAngle - relAngle - 1 / 4;
+	$: midpoint = start + relAngle / 2;
 	$: radius = ((start + 1) % 1) * 60;
-	$: dashArray = `${delta} ${1 - delta}`;
-	$: midpoint = start + delta / 2;
 
 	$: frequency = node.absInterval().normalized().valueOf() * 256;
 	$: keyIndex = Math.round(node.absInterval().normalized().log2valueOf() * 12 + 12) % 12;
@@ -43,7 +41,8 @@
 		cy="0"
 		r={radius}
 		pathLength={1}
-		stroke-dasharray={dashArray}
+		stroke-dasharray="1"
+		stroke-dashoffset={1 - relAngle}
 		style:transform="rotate({start}turn)"
 	/>
 	<text
@@ -84,7 +83,7 @@
 		stroke: var(--color);
 		stroke-width: 4px;
 		fill: none;
-		transition: stroke 0.1s, transform 1s, stroke-dasharray 1s, r 1s;
+		transition: stroke 0.1s, transform 1s, stroke-dashoffset 1s, r 1s;
 	}
 	text {
 		font-size: 4px;
