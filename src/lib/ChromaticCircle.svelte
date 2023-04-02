@@ -36,8 +36,8 @@
 		{/each}
 	</g>
 	<g>
-		{#each $tree as node (node.id)}
-			<ChromaticCircleNode {node} {keyboard} bind:current />
+		{#each $tree as node, i (node.id)}
+			<ChromaticCircleNode {node} {i} bind:current />
 		{/each}
 	</g>
 </svg>

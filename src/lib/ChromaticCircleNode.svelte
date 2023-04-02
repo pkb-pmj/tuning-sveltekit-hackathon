@@ -6,6 +6,7 @@
 	export let node: Node;
 	export let current: Node;
 	export let keyboard: KeyboardStore;
+	export let i: number;
 
 	$: active = current === node;
 
@@ -16,7 +17,7 @@
 
 	$: start = absAngle - relAngle - 1 / 4;
 	$: midpoint = start + relAngle / 2;
-	$: radius = ((start + 1) % 1) * 60;
+	$: radius = (12 - i) * 5;
 
 	$: frequency = node.absInterval().normalized().valueOf() * 256;
 	$: keyIndex = Math.round(node.absInterval().normalized().log2valueOf() * 12 + 12) % 12;
@@ -47,7 +48,7 @@
 	/>
 	<text
 		class="interval transform"
-		style:transform="rotate({midpoint}turn) translate({radius}px) rotate({-midpoint}turn)"
+		style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg)"
 	>
 		{node.getInterval().frac()}
 	</text>
