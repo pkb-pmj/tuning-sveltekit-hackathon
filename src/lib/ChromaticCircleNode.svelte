@@ -32,7 +32,7 @@
 		<line x1="0" y1="-80" x2="0" y2="-84" />
 		<circle cx="0" cy="-74" r="6" />
 		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
-			{node.absInterval().normalized().valueOf()}
+			{node.absInterval().normalized().frac()}
 		</text>
 	</g>
 	<circle
@@ -49,7 +49,7 @@
 		class="interval transform"
 		style:transform="rotate({midpoint}turn) translate({radius}px) rotate({-midpoint}turn)"
 	>
-		{node.getInterval().valueOf()}
+		{node.getInterval().frac()}
 	</text>
 </g>
 

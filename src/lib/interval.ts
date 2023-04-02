@@ -81,4 +81,29 @@ export class Interval {
 	div(value: number): Interval {
 		return new Interval(this.factors.map((exp) => exp.div(value)));
 	}
+
+	frac(): string {
+		const whole: [number, number][] = this.factors.map((exp, i) => [
+			exp.abs().floor().valueOf() * exp.s,
+			i,
+		]);
+		const frac: [Fraction, number][] = this.factors.map((exp, i) => [exp.mod(1), i]);
+
+		const numWhole = whole
+			.filter(([exp]) => exp > 0)
+			.reduce((acc, [exp, i]) => acc * primes[i] ** exp, 1);
+
+		const denWhole = whole
+			.filter(([exp]) => exp < 0)
+			.reduce((acc, [exp, i]) => acc * primes[i] ** -exp, 1);
+
+		const wholeFrac = new Fraction(numWhole, denWhole);
+
+		const fractional = frac
+			.filter(([exp, _]) => !exp.equals(0))
+			.map(([exp, i]) => `${primes[i]}^${exp.toFraction()}`);
+
+		console.log(whole, frac, numWhole, denWhole, wholeFrac, fractional);
+		return [wholeFrac.toFraction(), ...fractional].join('*');
+	}
 }
