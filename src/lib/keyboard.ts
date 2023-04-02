@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { writable, type Readable } from 'svelte/store';
 
-const keyLabelsEn = [
+export const keyLabelsEn = [
 	'C',
 	'C♯ D♭',
 	'D',
@@ -15,7 +15,7 @@ const keyLabelsEn = [
 	'A♯ B♭',
 	'B',
 ];
-const keyLabelsPl = [
+export const keyLabelsPl = [
 	'C',
 	'Cis Des',
 	'D',

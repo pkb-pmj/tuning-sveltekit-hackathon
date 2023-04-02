@@ -28,10 +28,10 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <g class="wrapper" on:click={activate} class:active>
 	<g class="transform" style:transform="rotate({absAngle}turn)">
-		<line x1="0" y1="0" x2="0" y2="-74" />
-		<line x1="0" y1="-86" x2="0" y2="-92" />
-		<circle cx="0" cy="-80" r="6" />
-		<text style:transform="translate(0, -80px) rotate({-absAngle}turn)" class="transform">
+		<line x1="0" y1="0" x2="0" y2="-68" />
+		<line x1="0" y1="-80" x2="0" y2="-84" />
+		<circle cx="0" cy="-74" r="6" />
+		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
 			{node.absInterval().normalized().valueOf()}
 		</text>
 	</g>

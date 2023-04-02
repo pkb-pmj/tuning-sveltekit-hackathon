@@ -2,9 +2,10 @@
 	import { get, type Readable } from 'svelte/store';
 	import CentLine from './CentLine.svelte';
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
+	import ChromaticCircleNoteSlices from './ChromaticCircleNoteSlices.svelte';
 	import { Interval } from './interval';
 	import type { Node } from './intervalTree';
-	import type { KeyboardStore } from './keyboard';
+	import { keyLabelsEn, type KeyboardStore } from './keyboard';
 
 	export let tree: Readable<Node[]>;
 	export let keyboard: KeyboardStore;
@@ -26,6 +27,9 @@
 	<button on:click={() => current.removeSelf()}>Remove</button>
 {/if}
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+	<g>
+		<ChromaticCircleNoteSlices labels={keyLabelsEn} />
+	</g>
 	<g>
 		{#each cents as i}
 			<CentLine {i} />

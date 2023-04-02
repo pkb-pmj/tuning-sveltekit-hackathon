@@ -11,7 +11,7 @@
 	}[weight];
 </script>
 
-<line class={weight} style:--angle="{angle}deg" x1="0" y1={length - 92} x2="0" y2="-92" />
+<line class={weight} style:--angle="{angle}deg" x1="0" y1="84" x2="0" y2={84 + length} />
 {#if weight === 'm100'}
 	<text style:--angle="{angle}deg">{i}</text>
 {/if}
@@ -34,9 +34,9 @@
 		stroke-width: 0.2px;
 	}
 	text {
-		transform: rotate(var(--angle)) translate(0, -87px);
+		transform: rotate(var(--angle)) translate(0, -89px);
 		font-size: 4px;
 		text-anchor: middle;
-		dominant-baseline: hanging;
+		dominant-baseline: auto;
 	}
 </style>
