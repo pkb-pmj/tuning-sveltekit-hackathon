@@ -20,6 +20,7 @@
 	line {
 		stroke: black;
 		transform: rotate(var(--angle));
+		pointer-events: none;
 	}
 	.m100 {
 		stroke-width: 0.4px;
@@ -38,5 +39,6 @@
 		font-size: 4px;
 		text-anchor: middle;
 		dominant-baseline: auto;
+		pointer-events: none;
 	}
 </style>
