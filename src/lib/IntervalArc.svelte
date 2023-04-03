@@ -39,6 +39,9 @@
 	g:nth-child(2n) circle.arc {
 		stroke: blue;
 	}
+	g:last-child:not(:nth-child(2n)) circle.arc {
+		stroke: green;
+	}
 	text {
 		font-size: 4px;
 		text-anchor: middle;
