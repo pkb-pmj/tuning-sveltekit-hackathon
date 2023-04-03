@@ -2,7 +2,7 @@ import { writable, type Readable } from 'svelte/store';
 import { Interval } from './interval';
 
 export interface Node {
-	addChild(interval: Interval): void;
+	addChild(interval: Interval): Node;
 	removeSelf(): void;
 	getInterval(): Interval;
 	updateInterval(interval: Interval): void;
@@ -25,18 +25,19 @@ export function intervalTree(): Readable<Node[]> {
 			this.parent = parent;
 		}
 
-		addChild(interval: Interval) {
+		addChild(interval: Interval): Node {
 			const child = new Node(interval, this);
 			this.children.push(child);
 			nodes.push(child);
 			set(nodes);
+			return child;
 		}
 
 		removeSelf() {
 			if (!this.parent) throw new Error("can't remove the root node");
 			let index = this.parent.children.indexOf(this);
 			if (index === -1) throw new Error("didn't find self in parent's children");
-			this.parent!.children.splice(index);
+			this.parent!.children.splice(index, 1);
 
 			// TODO: reduce the complexity
 			const notes = [];
