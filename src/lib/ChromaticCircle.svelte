@@ -52,7 +52,7 @@
 {/if}
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
 	<g>
-		<ChromaticCircleNoteSlices labels={keyLabelsEn} />
+		<ChromaticCircleNoteSlices labels={keyLabelsEn} {keyboard} />
 	</g>
 	<g>
 		{#each cents as i}

@@ -1,11 +1,14 @@
 <script lang="ts">
+	import type { KeyboardStore } from './keyboard';
+
 	export let labels: string[];
+	export let keyboard: KeyboardStore;
 
 	labels = labels.map((label) => label.replace(' ', ' / '));
 </script>
 
 {#each labels as label, i}
-	<g>
+	<g class:playing={$keyboard[i].pressed}>
 		<circle r="92" pathLength="24" style:transform="rotate({i / 12}turn)" />
 		<text style:transform="rotate({i / 12}turn) translate(0, -95px)">{label}</text>
 	</g>
@@ -23,7 +26,8 @@
 	g:nth-child(2n) circle {
 		stroke: #00f;
 	}
-	g:hover circle {
+	g:hover circle,
+	g.playing circle {
 		opacity: 0.2;
 	}
 	text {
