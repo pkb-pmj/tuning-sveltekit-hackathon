@@ -61,7 +61,9 @@
 	</g>
 	<g>
 		{#each $intervals as [start, delta]}
-			<IntervalArc {start} {delta} radius={80} />
+			<g class="playing">
+				<IntervalArc {start} {delta} radius={80} />
+			</g>
 		{/each}
 	</g>
 	<g>
@@ -70,3 +72,16 @@
 		{/each}
 	</g>
 </svg>
+
+<style>
+	g.playing {
+		--color: red;
+		--transform-duration: 0.2s;
+	}
+	g.playing:nth-child(2n) {
+		--color: blue;
+	}
+	g.playing:last-child:not(:nth-child(2n)) {
+		--color: green;
+	}
+</style>

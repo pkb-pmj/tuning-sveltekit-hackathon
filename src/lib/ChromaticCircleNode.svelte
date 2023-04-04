@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Readable } from 'svelte/store';
+	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import SoundGenerator from './SoundGenerator.svelte';
 
@@ -12,11 +13,11 @@
 
 	const activate = () => (current = node);
 
-	$: absAngle = node.absInterval().log2valueOf();
-	$: relAngle = node.getInterval().log2valueOf();
+	$: absInterval = node.absInterval();
+	$: relInterval = node.getInterval();
+	$: parentInterval = absInterval.sub(relInterval);
 
-	$: start = absAngle - relAngle - 1 / 4;
-	$: midpoint = start + relAngle / 2;
+	$: absAngle = absInterval.log2valueOf();
 	$: radius = (12 - i) * 5;
 
 	$: frequency = node.absInterval().normalized().valueOf() * 256;
@@ -33,45 +34,27 @@
 		<line x1="0" y1="-80" x2="0" y2="-84" />
 		<circle cx="0" cy="-74" r="6" />
 		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
-			{node.absInterval().normalized().frac()}
+			{absInterval.normalized().frac()}
 		</text>
 	</g>
-	<circle
-		class="arc"
-		cx="0"
-		cy="0"
-		r={radius}
-		pathLength={1}
-		stroke-dasharray="1"
-		stroke-dashoffset={1 - relAngle}
-		style:transform="rotate({start}turn)"
-	/>
-	<text
-		class="interval transform"
-		style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg)"
-	>
-		{node.getInterval().frac()}
-	</text>
+	<g class="arc">
+		<IntervalArc start={parentInterval} delta={relInterval} {radius} />
+	</g>
 </g>
 
 <style>
 	g.wrapper {
-		--color: #04f4;
-	}
-	g.wrapper:hover {
-		--color: #04fa;
+		--color: blue;
+		--opacity: 0.2;
 	}
 	g.wrapper.active {
-		--color: #0c04;
-	}
-	g.wrapper.active:hover {
-		--color: #0c0a;
+		--color: green;
 	}
 	g.wrapper.isPlaying {
-		--color: #cc04;
+		--color: yellow;
 	}
-	g.wrapper.isPlaying:hover {
-		--color: #cc0a;
+	g.wrapper:hover {
+		--opacity: 0.6;
 	}
 	.transform {
 		transition: transform 1s;
@@ -84,13 +67,8 @@
 		stroke: black;
 		stroke-width: 0.4px;
 		fill: var(--color);
-		transition: fill 0.1s;
-	}
-	circle.arc {
-		stroke: var(--color);
-		stroke-width: 4px;
-		fill: none;
-		transition: stroke 0.1s, transform 1s, stroke-dashoffset 1s, r 1s;
+		fill-opacity: var(--opacity);
+		transition: fill 0.1s, fill-opacity 0.1s;
 	}
 	text {
 		font-size: 4px;

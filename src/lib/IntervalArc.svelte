@@ -10,41 +10,32 @@
 	$: midpoint = startAngle + deltaAngle / 2;
 </script>
 
-<g>
-	<circle
-		class="arc"
-		cx="0"
-		cy="0"
-		r={radius}
-		pathLength={1}
-		stroke-dasharray="1"
-		stroke-dashoffset={1 - deltaAngle}
-		style:transform="rotate({startAngle}turn)"
-	/>
-	<text
-		class="interval transform"
-		style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg)"
-	>
-		{delta.frac()}
-	</text>
-</g>
+<circle
+	cx="0"
+	cy="0"
+	r={radius}
+	pathLength={1}
+	stroke-dasharray="1"
+	stroke-dashoffset={1 - deltaAngle}
+	style:transform="rotate({startAngle}turn)"
+/>
+<text style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg)">
+	{delta.frac()}
+</text>
 
 <style>
-	circle.arc {
-		stroke: red;
-		stroke-width: 5px;
+	circle {
+		stroke: var(--color);
+		stroke-width: 4px;
 		fill: none;
-		opacity: 0.2;
-	}
-	g:nth-child(2n) circle.arc {
-		stroke: blue;
-	}
-	g:last-child:not(:nth-child(2n)) circle.arc {
-		stroke: green;
+		stroke-opacity: var(--opacity, 0.2);
+		transition: stroke 0.1s, stroke-opacity 0.1s, transform var(--transform-duration, 1s),
+			stroke-dashoffset var(--transform-duration, 1s), r var(--transform-duration, 1s);
 	}
 	text {
 		font-size: 4px;
 		text-anchor: middle;
 		dominant-baseline: middle;
+		transition: transform var(--transform-duration, 1s);
 	}
 </style>
