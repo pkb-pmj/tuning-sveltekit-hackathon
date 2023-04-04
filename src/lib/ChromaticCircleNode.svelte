@@ -1,17 +1,24 @@
 <script lang="ts">
-	import type { Readable } from 'svelte/store';
+	import type { Readable, Writable } from 'svelte/store';
 	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import SoundGenerator from './SoundGenerator.svelte';
 
 	export let node: Node;
-	export let current: Node;
 	export let playing: Readable<Node[]>;
+	export let selected: Writable<Node[]>;
 	export let i: number;
 
-	$: active = current === node;
-
-	const activate = () => (current = node);
+	function onClick(event: MouseEvent) {
+		if (event.shiftKey) {
+			const index = $selected.indexOf(node);
+			if (index === -1) $selected.push(node);
+			else $selected.splice(index, 1);
+			$selected = $selected;
+		} else {
+			$selected = [node];
+		}
+	}
 
 	$: absInterval = node.absInterval();
 	$: relInterval = node.getInterval();
@@ -22,13 +29,14 @@
 
 	$: frequency = node.absInterval().normalized().valueOf() * 256;
 	$: isPlaying = $playing.indexOf(node) !== -1;
+	$: isSelected = $selected.includes(node);
 </script>
 
 {#if isPlaying}
 	<SoundGenerator {frequency} />
 {/if}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<g class="wrapper" on:click={activate} class:active class:isPlaying>
+<g class="wrapper" on:click|stopPropagation={onClick} class:isPlaying class:isSelected>
 	<g class="transform" style:transform="rotate({absAngle}turn)">
 		<line x1="0" y1="0" x2="0" y2="-68" />
 		<line x1="0" y1="-80" x2="0" y2="-84" />
@@ -47,11 +55,11 @@
 		--color: blue;
 		--opacity: 0.2;
 	}
-	g.wrapper.active {
-		--color: green;
-	}
 	g.wrapper.isPlaying {
 		--color: yellow;
+	}
+	g.wrapper.isSelected {
+		--color: green;
 	}
 	g.wrapper:hover {
 		--opacity: 0.6;

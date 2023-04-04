@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { derived, get, type Readable } from 'svelte/store';
+	import { derived, writable, type Readable } from 'svelte/store';
 	import CentLine from './CentLine.svelte';
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import ChromaticCircleNoteSlices from './ChromaticCircleNoteSlices.svelte';
@@ -34,23 +34,37 @@
 		}
 		return intervals;
 	});
-	let current: Node = get(tree)[0];
+
+	const selected = writable<Node[]>([]);
 	let interval: string;
+
+	function addChild() {
+		$selected.forEach((child) => child.addChild(new Interval(interval).normalized()));
+	}
+	function updateInterval() {
+		$selected.forEach((child) => child.updateInterval(new Interval(interval).normalized()));
+	}
+	function removeSelf() {
+		$selected.forEach((child) => child.removeSelf());
+	}
+	function unselect(event: MouseEvent) {
+		if (event.shiftKey) return;
+		$selected = [];
+	}
 
 	const cents = Array(240)
 		.fill(0)
 		.map((_, i) => i * 5);
 </script>
 
-{#if current}
+{#if $selected.length > -1}
 	<input type="text" bind:value={interval} />
-	<button on:click={() => current.addChild(new Interval(interval).normalized())}>Add child</button>
-	<button on:click={() => current.updateInterval(new Interval(interval).normalized())}>
-		Update interval
-	</button>
-	<button on:click={() => current.removeSelf()}>Remove</button>
+	<button on:click={addChild}>Add child</button>
+	<button on:click={updateInterval}> Update interval </button>
+	<button on:click={removeSelf}>Remove</button>
 {/if}
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
 	<g>
 		<ChromaticCircleNoteSlices labels={keyLabelsEn} {keyboard} />
 	</g>
@@ -68,7 +82,7 @@
 	</g>
 	<g>
 		{#each $tree as node, i (node.id)}
-			<ChromaticCircleNode {node} {playing} {i} bind:current />
+			<ChromaticCircleNode {node} {playing} {i} {selected} />
 		{/each}
 	</g>
 </svg>
