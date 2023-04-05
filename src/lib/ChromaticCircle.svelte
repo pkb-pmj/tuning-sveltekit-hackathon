@@ -51,18 +51,33 @@
 		if (event.shiftKey) return;
 		$selected = [];
 	}
+	let intervalToDivide: Interval | null = null;
+	function selectForDivide() {
+		intervalToDivide = $selected[1]
+			.absInterval()
+			.sub($selected[0].absInterval())
+			// .add(new Interval(2))
+			.normalized();
+		$selected = [];
+	}
+	function divideBetween() {
+		intervalToDivide = intervalToDivide!.div($selected.length);
+		$selected.forEach((node) => {
+			node.updateInterval(node.getInterval().add(intervalToDivide!));
+		});
+	}
 
 	const cents = Array(240)
 		.fill(0)
 		.map((_, i) => i * 5);
 </script>
 
-{#if $selected.length > -1}
-	<input type="text" bind:value={interval} />
-	<button on:click={addChild}>Add child</button>
-	<button on:click={updateInterval}> Update interval </button>
-	<button on:click={removeSelf}>Remove</button>
-{/if}
+<input type="text" bind:value={interval} />
+<button on:click={addChild} disabled={$selected.length === 0}>Add child</button>
+<button on:click={updateInterval} disabled={$selected.length === 0}> Update interval </button>
+<button on:click={removeSelf} disabled={$selected.length === 0}>Remove</button>
+<button on:click={selectForDivide} disabled={$selected.length !== 2}>Select for divide</button>
+<button on:click={divideBetween} disabled={$selected.length === 0}>Divide between</button>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
 	<g>
