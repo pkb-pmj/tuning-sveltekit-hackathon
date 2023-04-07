@@ -106,3 +106,25 @@ test('removing from paralell trees', () => {
 	fifth.removeSelf();
 	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1']));
 });
+
+test('removing an already removed node and its child', () => {
+	const tree = intervalTree();
+	let list = get(tree);
+	const [root] = list;
+	tree.subscribe((value) => (list = value));
+
+	const fifth = root.addChild(new Interval('3/2'));
+
+	const fifth2 = fifth.addChild(new Interval('3/2'));
+
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '9/8', '3/2']));
+
+	fifth.removeSelf();
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1']));
+
+	fifth2.removeSelf();
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1']));
+
+	fifth.removeSelf();
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1']));
+});
