@@ -14,13 +14,12 @@
 	const playing = derived([tree, keyboard], ([tree, keyboard]) =>
 		tree
 			.filter((node) => {
-				const i = Math.round(node.absInterval.normalized().log2valueOf() * 12 + 12) % 12;
+				const i = Math.round(node.absInterval.modUnsigned().log2valueOf() * 12 + 12) % 12;
 				return keyboard[i].pressed;
 			})
 			.sort(
 				(a, b) =>
-					a.absInterval.add(new Interval(2)).normalized().log2valueOf() -
-					b.absInterval.add(new Interval(2)).normalized().log2valueOf(),
+					a.absInterval.modUnsigned().log2valueOf() - b.absInterval.modUnsigned().log2valueOf(),
 			),
 	);
 	const intervals = derived([playing], ([playing]) => {
@@ -28,9 +27,9 @@
 
 		let intervals: [Interval, Interval][] = [];
 		for (let i = 0; i < playing.length; i++) {
-			const start = playing[i].absInterval.normalized();
-			const end = playing[(i + 1) % playing.length].absInterval.normalized();
-			const delta = end.sub(start).add(new Interval(2)).normalized();
+			const start = playing[i].absInterval.modUnsigned();
+			const end = playing[(i + 1) % playing.length].absInterval.modUnsigned();
+			const delta = end.sub(start).modUnsigned();
 			intervals.push([start, delta]);
 		}
 		return intervals;
@@ -40,10 +39,10 @@
 	let interval: string;
 
 	function addChild() {
-		$selected.forEach((child) => child.addChild(new Interval(interval).normalized()));
+		$selected.forEach((child) => child.addChild(new Interval(interval).modSigned()));
 	}
 	function updateInterval() {
-		$selected.forEach((child) => child.setInterval(new Interval(interval).normalized()));
+		$selected.forEach((child) => child.setInterval(new Interval(interval).modSigned()));
 	}
 	function removeSelf() {
 		$selected.forEach((child) => child.removeSelf());
@@ -54,10 +53,7 @@
 	}
 	let intervalToDivide: Interval | null = null;
 	function selectForDivide() {
-		intervalToDivide = $selected[1].absInterval
-			.sub($selected[0].absInterval)
-			// .add(new Interval(2))
-			.normalized();
+		intervalToDivide = $selected[1].absInterval.sub($selected[0].absInterval).modSigned();
 		$selected = [];
 	}
 	function divideBetween() {

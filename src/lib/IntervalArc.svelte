@@ -20,7 +20,7 @@
 	style:transform="rotate({startAngle}turn)"
 />
 <text style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg)">
-	{delta.frac()}
+	{delta.abs().frac()}
 </text>
 
 <style>

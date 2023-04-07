@@ -24,7 +24,7 @@
 	$: absAngle = node.absInterval.log2valueOf();
 	$: radius = node.index * 5;
 
-	$: frequency = node.absInterval.normalized().valueOf() * 256;
+	$: frequency = node.absInterval.modUnsigned().valueOf() * 256;
 	$: isPlaying = $playing.indexOf(node) !== -1;
 	$: isSelected = $selected.includes(node);
 </script>
@@ -39,7 +39,7 @@
 		<line x1="0" y1="-80" x2="0" y2="-84" />
 		<circle cx="0" cy="-74" r="6" />
 		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
-			{node.absInterval.normalized().frac()}
+			{node.absInterval.modUnsigned().frac()}
 		</text>
 	</g>
 	<g class="arc">
