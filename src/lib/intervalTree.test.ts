@@ -9,7 +9,7 @@ function intervalsFromStrings(fractions: string[]): Interval[] {
 
 function intervalsFromNodes(nodes: Node[]): Interval[] {
 	return nodes
-		.map((node) => node.absInterval.normalized())
+		.map((node) => node.absInterval.modSigned())
 		.sort((a, b) => a.valueOf() - b.valueOf());
 }
 

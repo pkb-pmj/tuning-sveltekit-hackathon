@@ -54,15 +54,28 @@ export class Interval {
 		return this.factors.reduce((acc, exp, i) => acc + logOfPrimes[i] * exp.valueOf(), 0);
 	}
 
-	normalize() {
-		let logSum = this.log2valueOf();
-		logSum = Math.floor(Math.abs(logSum)) * Math.sign(logSum);
-		this.factors[0] = this.factors[0].sub(logSum);
+	abs(): Interval {
+		const logSum = this.log2valueOf();
+		if (logSum >= 0) {
+			return new Interval(this.factors);
+		} else {
+			return new Interval(this.factors.map((val) => val.neg()));
+		}
 	}
 
-	normalized(): Interval {
+	modUnsigned(): Interval {
+		let logSum = this.log2valueOf();
+		logSum = Math.floor(logSum);
 		const interval = new Interval(this.factors);
-		interval.normalize();
+		interval.factors[0] = interval.factors[0].sub(logSum);
+		return interval;
+	}
+
+	modSigned(): Interval {
+		let logSum = this.log2valueOf();
+		logSum = Math.floor(Math.abs(logSum)) * Math.sign(logSum);
+		const interval = new Interval(this.factors);
+		interval.factors[0] = interval.factors[0].sub(logSum);
 		return interval;
 	}
 
@@ -103,7 +116,17 @@ export class Interval {
 			.filter(([exp, _]) => !exp.equals(0))
 			.map(([exp, i]) => `${primes[i]}^${exp.toFraction()}`);
 
-		console.log(whole, frac, numWhole, denWhole, wholeFrac, fractional);
 		return [wholeFrac.toFraction(), ...fractional].join('*');
+	}
+
+	toString(): string {
+		return this.factors
+			.filter((exp) => !exp.equals(0)) // filtering changes indexes!
+			.map((exp, i) => `${primes[i]}^${exp.toFraction()}`)
+			.join('*');
+	}
+
+	clone(): Interval {
+		return structuredClone(this);
 	}
 }
