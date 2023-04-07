@@ -128,3 +128,19 @@ test('removing an already removed node and its child', () => {
 	fifth.removeSelf();
 	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1']));
 });
+
+test('updating interval', () => {
+	const tree = intervalTree();
+	let list = get(tree);
+	const [root] = list;
+	tree.subscribe((value) => (list = value));
+
+	const fifth = root.addChild(new Interval('3/2'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '3/2']));
+
+	fifth.addChild(new Interval('5/4'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '3/2', '15/8']));
+
+	fifth.setInterval(new Interval('4/3'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '5/3']));
+});
