@@ -7,7 +7,6 @@
 	export let node: Node;
 	export let playing: Readable<Node[]>;
 	export let selected: Writable<Node[]>;
-	export let i: number;
 
 	function onClick(event: MouseEvent) {
 		if (event.shiftKey) {
@@ -23,7 +22,7 @@
 	$: parentInterval = node.absInterval.sub(node.relInterval);
 
 	$: absAngle = node.absInterval.log2valueOf();
-	$: radius = (12 - i) * 5;
+	$: radius = node.index * 5;
 
 	$: frequency = node.absInterval.normalized().valueOf() * 256;
 	$: isPlaying = $playing.indexOf(node) !== -1;
