@@ -2,81 +2,87 @@ import { writable, type Readable } from 'svelte/store';
 import { Interval } from './interval';
 
 export interface Node {
+	readonly children: Node[];
+	readonly relInterval: Interval;
+	readonly absInterval: Interval;
+	readonly index: number;
 	addChild(interval: Interval): Node;
 	removeSelf(): void;
-	getInterval(): Interval;
-	updateInterval(interval: Interval): void;
-	absInterval(): Interval;
-	readonly id: number;
+	setInterval(interval: Interval): void;
 }
 
+export const cmp = (a: Node, b: Node) => a.absInterval.log2valueOf() - b.absInterval.log2valueOf();
+
 export function intervalTree(): Readable<Node[]> {
-	let id = 0;
-	const nodes: Node[] = [];
+	class NodeClass implements Node {
+		relInterval: Interval;
+		absInterval!: Interval;
+		private parent: NodeClass | null;
+		children: NodeClass[] = [];
+		index: number = 0;
 
-	class Node {
-		private interval: Interval;
-		private parent: Node | null;
-		private children: Node[] = [];
-		id = id++;
-
-		constructor(interval: Interval, parent: Node | null) {
-			this.interval = interval;
+		constructor(parent: NodeClass | null = null, interval: Interval = new Interval(1)) {
+			this.relInterval = interval;
 			this.parent = parent;
+			this.updateAbsoluteInterval();
 		}
 
-		addChild(interval: Interval): Node {
-			const child = new Node(interval, this);
+		addChild(interval: Interval): NodeClass {
+			const child = new NodeClass(this, interval);
 			this.children.push(child);
+			this.children.sort(cmp);
 			nodes.push(child);
-			set(nodes);
+			updateTree();
 			return child;
 		}
 
 		removeSelf() {
 			if (!this.parent) throw new Error("can't remove the root node");
-			let index = this.parent.children.indexOf(this);
-			if (index === -1) throw new Error("didn't find self in parent's children");
-			this.parent!.children.splice(index, 1);
+			const toRemove = this.traverseBreadthFirst();
+			nodes = nodes.filter((node) => !toRemove.includes(node));
+			updateTree();
+		}
 
-			// TODO: reduce the complexity
-			const notes = [];
-			const queue: Node[] = [this];
+		setInterval(interval: Interval) {
+			this.relInterval = interval;
+			this.parent?.children.sort(cmp);
+			this.traverseBreadthFirst((node) => node.updateAbsoluteInterval());
+			updateTree();
+		}
+
+		private updateAbsoluteInterval() {
+			this.absInterval = this.parent?.absInterval.add(this.relInterval) ?? this.relInterval;
+		}
+
+		traverseBreadthFirst(fn?: (node: NodeClass) => void): NodeClass[] {
+			const nodes: NodeClass[] = [];
+			const queue: NodeClass[] = [this];
 			while (queue.length > 0) {
 				const node = queue.shift()!;
-				notes.push(node);
+				nodes.push(node);
 				node.children.forEach((child) => queue.push(child));
 			}
-			notes.forEach((note) => {
-				const index = nodes.indexOf(note);
-				if (index === -1) throw new Error("didn't find self in sorted");
-				nodes.splice(index, 1);
-			});
-			// no need to sort because we only removed some nodes, so the remaining nodes are still sorted
-			set(nodes);
+			if (fn) nodes.forEach(fn);
+			return nodes;
 		}
 
-		getInterval() {
-			return this.interval;
-		}
-
-		updateInterval(interval: Interval) {
-			this.interval = interval;
-			set(nodes);
-		}
-
-		absInterval() {
-			let interval = this.interval;
-			let node = this.parent;
-			while (node) {
-				interval = interval.add(node.interval);
-				node = node.parent;
-			}
-			return interval;
+		traverseDepthFirst(fn: (node: NodeClass) => void) {
+			fn(this);
+			this.children.forEach((child) => child.traverseDepthFirst(fn));
 		}
 	}
 
-	nodes.push(new Node(new Interval(1), null));
+	const root = new NodeClass();
+
+	function updateTree() {
+		let index = 0;
+		root.traverseDepthFirst((node) => {
+			node.index = index++;
+		});
+		set(nodes);
+	}
+
+	let nodes = [root];
 	const { set, subscribe } = writable(nodes);
 
 	return { subscribe };

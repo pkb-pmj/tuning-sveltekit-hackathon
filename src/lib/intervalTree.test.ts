@@ -9,7 +9,7 @@ function intervalsFromStrings(fractions: string[]): Interval[] {
 
 function intervalsFromNodes(nodes: Node[]): Interval[] {
 	return nodes
-		.map((node) => node.absInterval().normalized())
+		.map((node) => node.absInterval.normalized())
 		.sort((a, b) => a.valueOf() - b.valueOf());
 }
 
@@ -17,7 +17,7 @@ test('only root', () => {
 	const tree = intervalTree();
 	const list = get(tree);
 	expect(list.length).toStrictEqual(1);
-	expect(list[0].absInterval()).toEqual(new Interval(1));
+	expect(list[0].absInterval).toEqual(new Interval(1));
 });
 
 test('flat tree', () => {
