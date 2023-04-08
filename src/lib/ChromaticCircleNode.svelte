@@ -22,7 +22,7 @@
 	$: parentInterval = node.absInterval.sub(node.relInterval);
 
 	$: absAngle = node.absInterval.log2valueOf();
-	$: radius = node.index * 5;
+	$: radius = node.index * 5 + 2;
 
 	$: frequency = node.absInterval.modUnsigned().valueOf() * 256;
 	$: isPlaying = $playing.indexOf(node) !== -1;
@@ -35,7 +35,8 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <g class="wrapper" on:click|stopPropagation={onClick} class:isPlaying class:isSelected>
 	<g class="transform" style:transform="rotate({absAngle}turn)">
-		<line x1="0" y1="0" x2="0" y2="-68" />
+		<line x1="0" y1="0" x2="0" y2="-{radius - 2}" class="transparent" />
+		<line x1="0" y1="-{radius - 2}" x2="0" y2="-68" />
 		<line x1="0" y1="-80" x2="0" y2="-84" />
 		<circle cx="0" cy="-74" r="6" />
 		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
@@ -67,6 +68,11 @@
 	line {
 		stroke: black;
 		stroke-width: 0.4px;
+	}
+	line.transparent {
+		stroke-dasharray: 2.5;
+		stroke-dashoffset: -0.75;
+		opacity: 0.4;
 	}
 	circle {
 		stroke: black;
