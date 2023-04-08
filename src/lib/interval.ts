@@ -37,7 +37,7 @@ export class Interval {
 	constructor(factors: Fraction[]);
 	constructor(first: Fraction[] | Fraction | number | string, second?: number) {
 		if (Array.isArray(first)) {
-			this.factors = first;
+			this.factors = [...first];
 			while (this.factors.length < primes.length) {
 				this.factors.push(new Fraction(0));
 			}
