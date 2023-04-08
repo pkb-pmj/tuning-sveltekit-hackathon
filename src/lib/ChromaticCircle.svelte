@@ -118,6 +118,9 @@
 		background-color: #bbb;
 		cursor: not-allowed;
 	}
+	svg {
+		user-select: none;
+	}
 	g.playing {
 		--color: red;
 		--transform-duration: 0.2s;
