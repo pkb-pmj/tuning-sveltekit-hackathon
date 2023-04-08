@@ -11,31 +11,35 @@
 	export let tree: Readable<Node[]>;
 	export let keyboard: KeyboardStore;
 
+	const cmp = (a: Node, b: Node) =>
+		a.absInterval.modUnsigned().log2valueOf() - b.absInterval.modUnsigned().log2valueOf();
+
 	const playing = derived([tree, keyboard], ([tree, keyboard]) =>
 		tree
 			.filter((node) => {
 				const i = Math.round(node.absInterval.modUnsigned().log2valueOf() * 12 + 12) % 12;
 				return keyboard[i].pressed;
 			})
-			.sort(
-				(a, b) =>
-					a.absInterval.modUnsigned().log2valueOf() - b.absInterval.modUnsigned().log2valueOf(),
-			),
+			.sort(cmp),
 	);
-	const intervals = derived([playing], ([playing]) => {
-		if (playing.length < 2) return [];
+
+	const selected = writable<Node[]>([]);
+
+	const intervals = derived([playing, selected, tree], ([playing, selected, tree]) => {
+		const nodes = tree.filter((node) => playing.includes(node) || selected.includes(node));
+		if (nodes.length < 2) return [];
+		nodes.sort(cmp);
 
 		let intervals: [Interval, Interval][] = [];
-		for (let i = 0; i < playing.length; i++) {
-			const start = playing[i].absInterval.modUnsigned();
-			const end = playing[(i + 1) % playing.length].absInterval.modUnsigned();
+		for (let i = 0; i < nodes.length; i++) {
+			const start = nodes[i].absInterval.modUnsigned();
+			const end = nodes[(i + 1) % nodes.length].absInterval.modUnsigned();
 			const delta = end.sub(start).modUnsigned();
 			intervals.push([start, delta]);
 		}
 		return intervals;
 	});
 
-	const selected = writable<Node[]>([]);
 	let interval: string;
 
 	function addChild() {
