@@ -90,7 +90,7 @@
 	</g>
 	<g>
 		{#each $intervals as [start, delta]}
-			<g class="playing">
+			<g class="playing" on:click|stopPropagation>
 				<IntervalArc {start} {delta} radius={80} />
 			</g>
 		{/each}
