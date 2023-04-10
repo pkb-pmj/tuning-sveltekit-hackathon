@@ -5,5 +5,6 @@ export let audioContext: AudioContext;
 
 if (browser) {
 	audioContext = new AudioContext();
-	window.addEventListener('pointermove', () => audioContext.resume(), { once: true });
+	window.addEventListener('click', () => audioContext.resume(), { once: true });
+	window.addEventListener('keydown', () => audioContext.resume(), { once: true });
 }
