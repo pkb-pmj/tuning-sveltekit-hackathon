@@ -22,7 +22,9 @@
 	$: parentInterval = node.absInterval.sub(node.relInterval);
 
 	$: absAngle = node.absInterval.log2valueOf();
-	$: radius = node.index * 5 + 2;
+	$: innerRadius = node.index * 5;
+	$: width = (node.numDescendants + 1) * 5 - 1;
+	$: midRadius = innerRadius + width / 2;
 
 	$: frequency = node.absInterval.modUnsigned().valueOf() * 256;
 	$: isPlaying = $playing.indexOf(node) !== -1;
@@ -35,16 +37,17 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <g class="wrapper" on:click|stopPropagation={onClick} class:isPlaying class:isSelected>
 	<g class="transform" style:transform="rotate({absAngle}turn)">
-		<line x1="0" y1="0" x2="0" y2="-{radius - 2}" class="transparent" />
-		<line x1="0" y1="-{radius - 2}" x2="0" y2="-68" />
+		<line x1="0" y1="0" x2="0" y2="-{innerRadius}" class="transparent" />
+		<line x1="0" y1="-{innerRadius}" x2="0" y2="-68" />
 		<line x1="0" y1="-80" x2="0" y2="-84" />
-		<circle cx="0" cy="-74" r="6" />
+		<circle class="note" cx="0" cy="-74" r="6" />
 		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
 			{node.absInterval.modUnsigned().frac()}
 		</text>
 	</g>
 	<g class="arc">
-		<IntervalArc start={parentInterval} delta={node.relInterval} {radius} />
+		<circle class="wide-arc" cx="0" cy="0" r={midRadius} stroke-width={width} />
+		<IntervalArc start={parentInterval} delta={node.relInterval} radius={innerRadius + 2} />
 	</g>
 </g>
 
@@ -74,7 +77,7 @@
 		stroke-dashoffset: -0.75;
 		opacity: 0.4;
 	}
-	circle {
+	.note {
 		stroke: black;
 		stroke-width: 0.4px;
 		fill: var(--color);
@@ -85,5 +88,16 @@
 		font-size: 4px;
 		text-anchor: middle;
 		dominant-baseline: middle;
+	}
+	.wide-arc {
+		--opacity: 0;
+		fill: none;
+		stroke: var(--color);
+		stroke-opacity: var(--opacity);
+		transition: stroke 0.1s, stroke-opacity 0.1s;
+		pointer-events: none;
+	}
+	g.wrapper:hover .wide-arc {
+		--opacity: 0.1;
 	}
 </style>
