@@ -2,6 +2,7 @@ import { writable, type Readable } from 'svelte/store';
 import { Interval } from './interval';
 
 export interface Node {
+	readonly parent: Node | null;
 	readonly children: Node[];
 	readonly relInterval: Interval;
 	readonly absInterval: Interval;
@@ -17,7 +18,7 @@ export function intervalTree(): Readable<Node[]> {
 	class NodeClass implements Node {
 		relInterval: Interval;
 		absInterval!: Interval;
-		private parent: NodeClass | null;
+		parent: NodeClass | null;
 		children: NodeClass[] = [];
 		index: number = 0;
 
