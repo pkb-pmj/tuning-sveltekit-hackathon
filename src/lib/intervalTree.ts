@@ -7,6 +7,7 @@ export interface Node {
 	readonly relInterval: Interval;
 	readonly absInterval: Interval;
 	readonly index: number;
+	readonly numDescendants: number;
 	addChild(interval: Interval): Node;
 	removeSelf(): void;
 	setInterval(interval: Interval): void;
@@ -21,6 +22,7 @@ export function intervalTree(): Readable<Node[]> {
 		parent: NodeClass | null;
 		children: NodeClass[] = [];
 		index: number = 0;
+		numDescendants: number = 0;
 
 		constructor(parent: NodeClass | null = null, interval: Interval = new Interval(1)) {
 			this.relInterval = interval;
@@ -74,6 +76,11 @@ export function intervalTree(): Readable<Node[]> {
 			fn(this);
 			this.children.forEach((child) => child.traverseDepthFirst(fn));
 		}
+
+		traverseDepthFirstReverse(fn: (node: NodeClass) => void) {
+			this.children.forEach((child) => child.traverseDepthFirstReverse(fn));
+			fn(this);
+		}
 	}
 
 	const root = new NodeClass();
@@ -82,6 +89,9 @@ export function intervalTree(): Readable<Node[]> {
 		let index = 0;
 		root.traverseDepthFirst((node) => {
 			node.index = index++;
+		});
+		root.traverseDepthFirstReverse((node) => {
+			node.numDescendants = node.children.reduce((acc, curr) => acc + curr.numDescendants + 1, 0);
 		});
 		set(nodes);
 	}
