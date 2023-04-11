@@ -119,6 +119,10 @@ export class Interval {
 		return [wholeFrac.toFraction(), ...fractional].join('*');
 	}
 
+	cents(): number {
+		return this.log2valueOf() * 1200;
+	}
+
 	toString(): string {
 		return this.factors
 			.filter((exp) => !exp.equals(0)) // filtering changes indexes!
