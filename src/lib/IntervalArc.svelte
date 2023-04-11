@@ -1,4 +1,5 @@
 <script lang="ts">
+	import IntervalMathMl from './IntervalMathML.svelte';
 	import type { Interval } from './interval';
 
 	export let start: Interval;
@@ -19,9 +20,17 @@
 	stroke-dashoffset={1 - deltaAngle}
 	style:transform="rotate({startAngle}turn)"
 />
-<text style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg)">
-	{delta.abs().frac()}
-</text>
+<foreignObject
+	width="100px"
+	height="20px"
+	font-size="14px"
+	style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg) translate(-15px,
+	-2.5px) scale(0.3)"
+>
+	<div>
+		<IntervalMathMl interval={delta} display="block" />
+	</div>
+</foreignObject>
 
 <style>
 	circle {
@@ -37,5 +46,14 @@
 		text-anchor: middle;
 		dominant-baseline: middle;
 		transition: transform var(--transform-duration, 1s);
+	}
+	foreignObject {
+		transition: transform var(--transform-duration, 1s);
+	}
+	div {
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>

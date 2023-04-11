@@ -3,6 +3,7 @@
 	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import SoundGenerator from './SoundGenerator.svelte';
+	import IntervalMathMl from './IntervalMathML.svelte';
 
 	export let node: Node;
 	export let playing: Readable<Node[]>;
@@ -41,9 +42,17 @@
 		<line x1="0" y1="-{innerRadius}" x2="0" y2="-68" />
 		<line x1="0" y1="-80" x2="0" y2="-84" />
 		<circle class="note" cx="0" cy="-74" r="6" />
-		<text style:transform="translate(0, -74px) rotate({-absAngle}turn)" class="transform">
-			{node.absInterval.modUnsigned().frac()}
-		</text>
+		<foreignObject
+			width="100px"
+			height="50px"
+			font-size="16px"
+			style:transform="translate(0, -74px) rotate({-absAngle}turn) translate(-15px, -7.5px)
+			scale(0.3)"
+		>
+			<div>
+				<IntervalMathMl interval={node.absInterval.modUnsigned()} vertical />
+			</div>
+		</foreignObject>
 	</g>
 	<g class="arc">
 		<circle class="wide-arc" cx="0" cy="0" r={midRadius} stroke-width={width} />
@@ -84,10 +93,14 @@
 		fill-opacity: var(--opacity);
 		transition: fill 0.1s, fill-opacity 0.1s;
 	}
-	text {
-		font-size: 4px;
-		text-anchor: middle;
-		dominant-baseline: middle;
+	foreignObject {
+		transition: transform var(--transform-duration, 1s);
+	}
+	div {
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 	.wide-arc {
 		--opacity: 0;

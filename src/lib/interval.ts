@@ -129,4 +129,26 @@ export class Interval {
 	clone(): Interval {
 		return structuredClone(this);
 	}
+
+	mathML(): MathML {
+		const rational = this.factors
+			.map((exp, i) => ({ exp: exp.abs().floor().n * exp.s, base: primes[i] }))
+			.reduce((acc, { exp, base }) => {
+				return exp > 0 ? acc.mul(base ** exp) : exp < 0 ? acc.div(base ** -exp) : acc;
+			}, new Fraction(1));
+
+		const irrational = this.factors
+			.map((exp, i) => ({ exp: exp.mod(1), base: primes[i] }))
+			.filter(({ exp }) => !exp.equals(0));
+
+		return { rational, irrational };
+	}
+}
+
+interface MathML {
+	rational: Fraction;
+	irrational: {
+		base: number;
+		exp: Fraction;
+	}[];
 }
