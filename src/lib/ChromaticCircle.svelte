@@ -7,6 +7,7 @@
 	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
+	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
 
 	export let tree: Readable<Node[]>;
 	export let keyboard: KeyboardStore;
@@ -91,7 +92,7 @@
 	<g>
 		{#each $intervals as [start, delta]}
 			<g class="playing" on:click|stopPropagation>
-				<IntervalArc {start} {delta} radius={80} />
+				<CompoundIntervalArc {start} {delta} radius={80} />
 			</g>
 		{/each}
 	</g>

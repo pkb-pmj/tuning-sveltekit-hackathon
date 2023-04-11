@@ -4,6 +4,7 @@
 	import type { Node } from './intervalTree';
 	import SoundGenerator from './SoundGenerator.svelte';
 	import IntervalMathMl from './IntervalMathML.svelte';
+	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
 
 	export let node: Node;
 	export let playing: Readable<Node[]>;
@@ -56,7 +57,7 @@
 	</g>
 	<g class="arc">
 		<circle class="wide-arc" cx="0" cy="0" r={midRadius} stroke-width={width} />
-		<IntervalArc start={parentInterval} delta={node.relInterval} radius={innerRadius + 2} />
+		<CompoundIntervalArc start={parentInterval} delta={node.relInterval} radius={innerRadius + 2} />
 	</g>
 </g>
 

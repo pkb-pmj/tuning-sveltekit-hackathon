@@ -5,6 +5,7 @@
 	export let start: Interval;
 	export let delta: Interval;
 	export let radius: number;
+	export let label = true;
 
 	$: startAngle = start.log2valueOf() - 1 / 4;
 	$: deltaAngle = delta.log2valueOf();
@@ -20,17 +21,19 @@
 	stroke-dashoffset={1 - deltaAngle}
 	style:transform="rotate({startAngle}turn)"
 />
-<foreignObject
-	width="100px"
-	height="20px"
-	font-size="14px"
-	style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg) translate(-15px,
-	-2.5px) scale(0.3)"
->
-	<div>
-		<IntervalMathMl interval={delta} display="block" />
-	</div>
-</foreignObject>
+{#if label}
+	<foreignObject
+		width="100px"
+		height="20px"
+		font-size="14px"
+		style:transform="rotate({midpoint}turn) translate({radius}px) rotate(90deg) translate(-15px,
+		-2.5px) scale(0.3)"
+	>
+		<div>
+			<IntervalMathMl interval={delta} display="block" />
+		</div>
+	</foreignObject>
+{/if}
 
 <style>
 	circle {
