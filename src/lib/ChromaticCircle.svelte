@@ -7,6 +7,7 @@
 	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
+	import Waveform from './Waveform.svelte';
 	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
 
 	export let tree: Readable<Node[]>;
@@ -26,19 +27,25 @@
 
 	const selected = writable<Node[]>([]);
 
-	const intervals = derived([playing, selected, tree], ([playing, selected, tree]) => {
-		const nodes = tree.filter((node) => playing.includes(node) || selected.includes(node));
-		if (nodes.length < 2) return [];
-		nodes.sort(cmp);
+	const active = derived([playing, selected, tree], ([playing, selected, tree]) => {
+		return tree.filter((node) => playing.includes(node) || selected.includes(node)).sort(cmp);
+	});
+
+	const intervals = derived([active, tree], ([active, tree]) => {
+		if (active.length < 2) return [];
 
 		let intervals: [Interval, Interval][] = [];
-		for (let i = 0; i < nodes.length; i++) {
-			const start = nodes[i].absInterval.modUnsigned();
-			const end = nodes[(i + 1) % nodes.length].absInterval.modUnsigned();
+		for (let i = 0; i < active.length; i++) {
+			const start = active[i].absInterval.modUnsigned();
+			const end = active[(i + 1) % active.length].absInterval.modUnsigned();
 			const delta = end.sub(start).modUnsigned();
 			intervals.push([start, delta]);
 		}
 		return intervals;
+	});
+
+	const frequencies = derived([playing], ([playing]) => {
+		return playing.map((node) => node.absInterval.modUnsigned().valueOf() * 256);
 	});
 
 	let interval: string;
@@ -73,6 +80,7 @@
 		.map((_, i) => i * 5);
 </script>
 
+<Waveform {frequencies} />
 <input type="text" bind:value={interval} />
 <button on:click={addChild} disabled={$selected.length === 0}>Add child</button>
 <button on:click={updateInterval} disabled={$selected.length === 0}> Update interval </button>
