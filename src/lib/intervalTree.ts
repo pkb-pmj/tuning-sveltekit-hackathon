@@ -11,6 +11,7 @@ export interface Node {
 	addChild(interval: Interval): Node;
 	removeSelf(): void;
 	setInterval(interval: Interval): void;
+	pathTo(other: Node): Node[];
 }
 
 export const cmp = (a: Node, b: Node) => a.absInterval.log2valueOf() - b.absInterval.log2valueOf();
@@ -80,6 +81,26 @@ export function intervalTree(): Readable<Node[]> {
 		traverseDepthFirstReverse(fn: (node: NodeClass) => void) {
 			this.children.forEach((child) => child.traverseDepthFirstReverse(fn));
 			fn(this);
+		}
+
+		ancestorsInclusive(): NodeClass[] {
+			const nodes: NodeClass[] = [];
+			let node: NodeClass | null = this;
+			while (node) {
+				nodes.push(node);
+				node = node.parent;
+			}
+			return nodes;
+		}
+
+		pathTo(other: NodeClass): NodeClass[] {
+			const thisAncestors = this.ancestorsInclusive();
+			const otherAncestors = other.ancestorsInclusive();
+			const thisIndex = thisAncestors.findLastIndex((node) => otherAncestors.includes(node));
+			const otherIndex = otherAncestors.indexOf(thisAncestors[thisIndex]);
+			return thisAncestors
+				.slice(0, thisIndex + 1)
+				.concat(otherAncestors.slice(0, otherIndex).reverse());
 		}
 	}
 
