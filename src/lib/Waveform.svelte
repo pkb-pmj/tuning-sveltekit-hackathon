@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Readable } from 'svelte/store';
 
 	export let frequencies: Readable<number[]>;

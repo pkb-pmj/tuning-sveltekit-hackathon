@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Readable, Writable } from 'svelte/store';
-	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import SoundGenerator from './SoundGenerator.svelte';
 	import IntervalMathMl from './IntervalMathML.svelte';

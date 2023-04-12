@@ -4,7 +4,6 @@
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import ChromaticCircleNoteSlices from './ChromaticCircleNoteSlices.svelte';
 	import { Interval } from './interval';
-	import IntervalArc from './IntervalArc.svelte';
 	import type { Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
 	import Waveform from './Waveform.svelte';
@@ -32,7 +31,7 @@
 		return tree.filter((node) => playing.includes(node) || selected.includes(node)).sort(cmp);
 	});
 
-	const intervals = derived([active, tree], ([active, tree]) => {
+	const intervals = derived([active, tree], ([active]) => {
 		if (active.length < 2) return [];
 
 		let intervals: [Interval, Interval][] = [];
