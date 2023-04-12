@@ -9,9 +9,13 @@
 	import Waveform from './Waveform.svelte';
 	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
 	import IntervalInfo from './IntervalInfo.svelte';
+	import { setContext } from 'svelte';
 
 	export let tree: Readable<Node[]>;
 	export let keyboard: KeyboardStore;
+
+	const selectedInterval = writable<Interval | null>(null);
+	setContext('selectedInterval', selectedInterval);
 
 	const cmp = (a: Node, b: Node) =>
 		a.absInterval.modUnsigned().log2valueOf() - b.absInterval.modUnsigned().log2valueOf();
@@ -62,6 +66,7 @@
 	function unselect(event: MouseEvent) {
 		if (event.shiftKey) return;
 		$selected = [];
+		$selectedInterval = null;
 	}
 	let intervalToDivide: Interval | null = null;
 	function selectForDivide() {
@@ -99,7 +104,7 @@
 	</g>
 	<g>
 		{#each $intervals as [start, delta]}
-			<g class="playing" on:click|stopPropagation>
+			<g class="playing" on:click|stopPropagation={() => ($selectedInterval = delta)}>
 				<CompoundIntervalArc {start} {delta} radius={80} />
 			</g>
 		{/each}
@@ -110,8 +115,8 @@
 		{/each}
 	</g>
 </svg>
-{#if $selected.length === 1}
-	<IntervalInfo interval={$selected[0].absInterval.modUnsigned()} />
+{#if $selectedInterval}
+	<IntervalInfo interval={$selectedInterval} />
 {/if}
 
 <style>
