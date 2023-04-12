@@ -9,6 +9,7 @@
 </script>
 
 <IntervalMathMl {interval} display="inline" vertical />
+{interval.cents().toFixed(2)} cents
 {pure.name}
 {#if comma === null}
 	{remainder.log2valueOf() < 0 ? '-' : '+'}
