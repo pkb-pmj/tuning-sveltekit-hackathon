@@ -9,6 +9,7 @@
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
 	import Waveform from './Waveform.svelte';
 	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
+	import IntervalInfo from './IntervalInfo.svelte';
 
 	export let tree: Readable<Node[]>;
 	export let keyboard: KeyboardStore;
@@ -110,6 +111,9 @@
 		{/each}
 	</g>
 </svg>
+{#if $selected.length === 1}
+	<IntervalInfo interval={$selected[0].absInterval.modUnsigned()} />
+{/if}
 
 <style>
 	button {
