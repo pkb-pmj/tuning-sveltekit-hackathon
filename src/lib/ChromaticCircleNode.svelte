@@ -95,6 +95,7 @@
 		transition: fill 0.1s, fill-opacity 0.1s;
 	}
 	foreignObject {
+		pointer-events: none;
 		transition: transform var(--transform-duration, 1s);
 	}
 	div {
