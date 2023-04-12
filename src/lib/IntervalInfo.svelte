@@ -16,7 +16,7 @@
 	<IntervalMathMl interval={remainder} display="inline" vertical />
 {:else if comma.diff.n !== 0}
 	{comma.diff.s === -1 ? '-' : '+'}
-	{#if !comma.diff.equals(1)}
+	{#if comma.diff.n !== comma.diff.d}
 		{comma.diff.n}/{comma.diff.d}
 	{/if}
 	{comma.name}
