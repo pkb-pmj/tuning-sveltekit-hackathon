@@ -95,6 +95,13 @@ export class Interval {
 		return new Interval(this.factors.map((exp) => exp.div(value)));
 	}
 
+	divide(other: Interval): Fraction | null {
+		if (other.factors[0].n === 0) return null;
+		const ratio = this.factors[0].div(other.factors[0]);
+		if (this.factors.every((exp, i) => exp.equals(other.factors[i].mul(ratio)))) return ratio;
+		return null;
+	}
+
 	frac(): string {
 		const whole: [number, number][] = this.factors.map((exp, i) => [
 			exp.abs().floor().valueOf() * exp.s,

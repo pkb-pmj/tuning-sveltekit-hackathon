@@ -1,11 +1,16 @@
+import type Fraction from 'fraction.js';
 import { Interval } from './interval';
 
-export interface NamedInterval {
+export interface PureInterval {
 	name: string;
 	value: Interval;
 }
 
-export function closestNamedInterval(interval: Interval, list: NamedInterval[]): NamedInterval {
+export interface Comma extends PureInterval {
+	diff: Fraction;
+}
+
+export function closestInterval(interval: Interval, list: PureInterval[]): PureInterval {
 	const thisValue = interval.log2valueOf();
 	const sorted = list
 		.map(({ name, value }) => ({
@@ -17,7 +22,15 @@ export function closestNamedInterval(interval: Interval, list: NamedInterval[]):
 	return sorted[0];
 }
 
-export const pureIntervals: NamedInterval[] = [
+export function mostSimilarInterval(interval: Interval, list: PureInterval[]): Comma | null {
+	const sorted = list
+		.map(({ name, value }) => ({ name, value, diff: interval.divide(value) }))
+		.filter((comma): comma is Comma => comma.diff !== null)
+		.sort((a, b) => a.diff.sub(b.diff).valueOf());
+	return sorted[0] ?? null;
+}
+
+export const pureIntervals: PureInterval[] = [
 	{ name: 'Unison', value: new Interval('1') },
 	{ name: 'Minor Second', value: new Interval('16/15') },
 	{ name: 'Major Second', value: new Interval('9/8') },
@@ -34,7 +47,7 @@ export const pureIntervals: NamedInterval[] = [
 	// { name: 'Octave', value: new Interval('2') },
 ];
 
-export const commasAndSchismas = [
+export const commasAndSchismas: PureInterval[] = [
 	{ name: 'Pythagorean Comma', value: new Interval('531441/524288') },
 	{ name: 'Syntonic Comma', value: new Interval('81/80') },
 	{ name: 'Septimal Comma', value: new Interval('64/63') },
@@ -47,29 +60,29 @@ export const commasAndSchismas = [
 	{ name: 'Bohlen-Pierce Comma', value: new Interval('243/242') },
 ];
 
-export function closestPureInterval(interval: Interval) {
-	return closestNamedInterval(interval, pureIntervals);
+export function closestPureInterval(interval: Interval): PureInterval {
+	return closestInterval(interval, pureIntervals);
 }
 
-export function closestCommaOrSchisma(interval: Interval) {
-	return closestNamedInterval(interval, commasAndSchismas);
+export function closestComma(interval: Interval): PureInterval {
+	return closestInterval(interval, commasAndSchismas);
 }
 
-export function splitIntoPureAndComma(interval: Interval): [NamedInterval, NamedInterval] {
-	const sign = Math.sign(interval.log2valueOf());
+export function mostSimilarComma(interval: Interval): Comma | null {
+	return mostSimilarInterval(interval, commasAndSchismas);
+}
+
+export function splitIntoPureAndComma(interval: Interval) {
+	const pureSign = Math.sign(interval.log2valueOf());
 	interval = interval.abs();
 
 	const pure = closestPureInterval(interval);
 	const remainder = interval.sub(pure.value);
-	let comma = closestCommaOrSchisma(interval);
+	const commaSign = Math.sign(remainder.log2valueOf());
+	let comma = mostSimilarComma(remainder);
 
-	if (remainder.sub(comma.value).log2valueOf() !== 0) {
-		comma.value = remainder;
-		comma.name = 'Unknown comma';
-	}
+	pure.value = pure.value.mul(pureSign);
+	if (comma) comma.value = comma.value.mul(commaSign);
 
-	pure.value = pure.value.mul(sign);
-	comma.value = comma.value.mul(sign);
-
-	return [pure, comma];
+	return { pure, remainder, comma };
 }

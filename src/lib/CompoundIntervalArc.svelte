@@ -7,11 +7,11 @@
 	export let delta: Interval;
 	export let radius: number;
 
-	$: [pure, comma] = splitIntoPureAndComma(delta);
+	$: ({ pure, remainder } = splitIntoPureAndComma(delta));
 	$: midpoint = start.add(pure.value);
 </script>
 
 <IntervalArc {start} delta={pure.value} {radius} />
 <g style:--color="red">
-	<IntervalArc start={midpoint} delta={comma.value} {radius} label={false} />
+	<IntervalArc start={midpoint} delta={remainder} {radius} label={false} />
 </g>
