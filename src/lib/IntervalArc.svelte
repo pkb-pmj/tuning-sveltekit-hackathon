@@ -30,7 +30,7 @@
 		-2.5px) scale(0.3)"
 	>
 		<div>
-			<IntervalMathMl interval={delta} display="block" />
+			<IntervalMathMl interval={delta.abs()} display="block" />
 		</div>
 	</foreignObject>
 {/if}
