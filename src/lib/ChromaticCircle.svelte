@@ -16,6 +16,22 @@
 
 	const selectedInterval = writable<Interval | null>(null);
 	setContext('selectedInterval', selectedInterval);
+	const storedInterval = writable<Interval | null>(null);
+	const selected = writable<Node[]>([]);
+
+	function storeInterval() {
+		$storedInterval = $selectedInterval;
+	}
+	function clearStoredInterval() {
+		$storedInterval = null;
+	}
+	$: {
+		if ($selected.length === 2) {
+			$selectedInterval = $selected[0].absInterval.sub($selected[1].absInterval).modSigned().abs();
+		} else if ($selected.length > 2) {
+			$selectedInterval = null;
+		}
+	}
 
 	const cmp = (a: Node, b: Node) =>
 		a.absInterval.modUnsigned().log2valueOf() - b.absInterval.modUnsigned().log2valueOf();
@@ -28,8 +44,6 @@
 			})
 			.sort(cmp),
 	);
-
-	const selected = writable<Node[]>([]);
 
 	const active = derived([playing, selected, tree], ([playing, selected, tree]) => {
 		return tree.filter((node) => playing.includes(node) || selected.includes(node)).sort(cmp);
@@ -92,6 +106,30 @@
 <button on:click={removeSelf} disabled={$selected.length === 0}>Remove</button>
 <button on:click={selectForDivide} disabled={$selected.length !== 2}>Select for divide</button>
 <button on:click={divideBetween} disabled={$selected.length === 0}>Divide between</button>
+<div class="wrapper">
+	<div class="intervalBox">
+		{#if $selectedInterval}
+			<IntervalInfo interval={$selectedInterval} />
+			<button style:background-color="#48f8" on:click={storeInterval}>
+				Store selected interval
+			</button>
+		{:else if $selected.length > 1}
+			<span>{$selected.length} intervals selected</span>
+		{:else}
+			<span>Select an interval</span>
+		{/if}
+	</div>
+	<div class="intervalBox">
+		{#if $storedInterval}
+			<IntervalInfo interval={$storedInterval} />
+			<button style:background-color="#f008" on:click={clearStoredInterval}>
+				Clear stored interval
+			</button>
+		{:else}
+			<span>Store an interval</span>
+		{/if}
+	</div>
+</div>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
 	<g>
@@ -115,9 +153,6 @@
 		{/each}
 	</g>
 </svg>
-{#if $selectedInterval}
-	<IntervalInfo interval={$selectedInterval} />
-{/if}
 
 <style>
 	button {
@@ -134,6 +169,34 @@
 		color: #444;
 		background-color: #bbb;
 		cursor: not-allowed;
+	}
+	.wrapper {
+		display: flex;
+		padding: 0.4em;
+		gap: 0.4em;
+	}
+	.intervalBox {
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: space-between;
+		align-items: stretch;
+		width: 10em;
+		height: 10em;
+		padding: 0.5em;
+		border-radius: 0.5em;
+		background-color: #eee;
+	}
+	.intervalBox button {
+		align-self: stretch;
+		justify-self: end;
+		margin: 0;
+	}
+	.intervalBox span {
+		flex: 1;
+		text-align: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 	svg {
 		user-select: none;
