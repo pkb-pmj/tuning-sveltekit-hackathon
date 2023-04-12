@@ -82,6 +82,7 @@
 		stroke-width: 0.4px;
 	}
 	line.transparent {
+		pointer-events: none;
 		stroke-dasharray: 2.5;
 		stroke-dashoffset: -0.75;
 		opacity: 0.4;
