@@ -127,7 +127,7 @@
 		<div class="intervalBox">
 			{#if $selected.length > 0}
 				<select bind:value={intervalIndex}>
-					{#each pureIntervals.slice(1) as pure, i}
+					{#each pureIntervals.slice(1, -1) as pure, i}
 						<option value={i}>
 							{pure.value.frac()} – {pure.name}
 						</option>
