@@ -41,7 +41,7 @@ export function intervalTree(): Readable<Node[]> {
 		}
 
 		removeSelf() {
-			if (!this.parent) throw new Error("can't remove the root node");
+			if (!this.parent) return console.warn("can't remove the root node");
 			const index = this.parent.children.indexOf(this);
 			if (index === -1) console.warn("didn't find self in parent's children");
 			else this.parent.children.splice(index, 1);
