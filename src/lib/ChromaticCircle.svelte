@@ -84,7 +84,9 @@
 		$selected.forEach((child) => child.addChild(interval.mul(-1)));
 	}
 	function updateInterval() {
-		$selected.forEach((child) => child.setInterval(interval));
+		$selected.forEach((child) =>
+			child.setInterval(interval.mul(Math.sign(child.relInterval.log2valueOf()))),
+		);
 	}
 	function removeSelf() {
 		$selected.forEach((child) => child.removeSelf());
