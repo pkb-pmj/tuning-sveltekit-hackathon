@@ -112,8 +112,13 @@
 	const cents = Array(240)
 		.fill(0)
 		.map((_, i) => i * 5);
+
+	function onKeyDown(event: KeyboardEvent) {
+		if (event.code === 'Backspace') removeSelf();
+	}
 </script>
 
+<svelte:window on:keydown={onKeyDown} />
 <Waveform {frequencies} />
 <div class="wrapper">
 	<div class="intervalBox">
