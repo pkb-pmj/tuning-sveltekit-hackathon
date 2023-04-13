@@ -3,13 +3,14 @@
 	import CentLine from './CentLine.svelte';
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import ChromaticCircleNoteSlices from './ChromaticCircleNoteSlices.svelte';
-	import { Interval } from './interval';
+	import type { Interval } from './interval';
 	import type { Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
 	import Waveform from './Waveform.svelte';
 	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
 	import IntervalInfo from './IntervalInfo.svelte';
 	import { setContext } from 'svelte';
+	import { pureIntervals } from './pureIntervals';
 
 	export let tree: Readable<Node[]>;
 	export let keyboard: KeyboardStore;
@@ -66,13 +67,17 @@
 		return playing.map((node) => node.absInterval.modUnsigned().valueOf() * 256);
 	});
 
-	let interval: string;
+	let intervalIndex = 7;
+	$: interval = pureIntervals[intervalIndex + 1].value;
 
-	function addChild() {
-		$selected.forEach((child) => child.addChild(new Interval(interval).modSigned()));
+	function addChildUp() {
+		$selected.forEach((child) => child.addChild(interval));
+	}
+	function addChildDown() {
+		$selected.forEach((child) => child.addChild(interval.mul(-1)));
 	}
 	function updateInterval() {
-		$selected.forEach((child) => child.setInterval(new Interval(interval).modSigned()));
+		$selected.forEach((child) => child.setInterval(interval));
 	}
 	function removeSelf() {
 		$selected.forEach((child) => child.removeSelf());
@@ -100,13 +105,26 @@
 </script>
 
 <Waveform {frequencies} />
-<input type="text" bind:value={interval} />
-<button on:click={addChild} disabled={$selected.length === 0}>Add child</button>
-<button on:click={updateInterval} disabled={$selected.length === 0}> Update interval </button>
-<button on:click={removeSelf} disabled={$selected.length === 0}>Remove</button>
 <button on:click={selectForDivide} disabled={$selected.length !== 2}>Select for divide</button>
 <button on:click={divideBetween} disabled={$selected.length === 0}>Divide between</button>
 <div class="wrapper">
+	<div class="intervalBox">
+		{#if $selected.length > 0}
+			<select bind:value={intervalIndex}>
+				{#each pureIntervals.slice(1) as pure, i}
+					<option value={i}>
+						{pure.value.frac()} – {pure.name}
+					</option>
+				{/each}
+			</select>
+			<button on:click={addChildUp}>Add child (up)</button>
+			<button on:click={addChildDown}>Add child (down)</button>
+			<button on:click={updateInterval}> Update interval </button>
+			<button on:click={removeSelf}>Remove</button>
+		{:else}
+			<span>Select and edit a note or multiple notes</span>
+		{/if}
+	</div>
 	<div class="intervalBox">
 		{#if $selectedInterval}
 			<IntervalInfo interval={$selectedInterval} />
@@ -155,6 +173,9 @@
 </svg>
 
 <style>
+	select {
+		cursor: pointer;
+	}
 	button {
 		appearance: none;
 		border: none;
