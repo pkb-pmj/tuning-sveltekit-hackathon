@@ -24,7 +24,7 @@
 			<IntervalMathMl interval={remainder} display="inline" vertical />
 		{:else if comma.diff.n !== 0}
 			{#if comma.diff.n !== comma.diff.d}
-				{comma.diff.n}/{comma.diff.d}
+				{comma.diff.n}{#if comma.diff.d !== 1}/{comma.diff.d}{/if}
 			{/if}
 			{comma.name}
 		{/if}
