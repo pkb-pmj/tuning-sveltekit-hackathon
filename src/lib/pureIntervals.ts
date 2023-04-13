@@ -44,7 +44,7 @@ export const pureIntervals: PureInterval[] = [
 	{ name: 'Major Sixth', value: new Interval('5/3') },
 	{ name: 'Minor Seventh', value: new Interval('16/9') },
 	{ name: 'Major Seventh', value: new Interval('15/8') },
-	// { name: 'Octave', value: new Interval('2') },
+	{ name: 'Octave', value: new Interval('2') },
 ];
 
 export const commasAndSchismas: PureInterval[] = [
