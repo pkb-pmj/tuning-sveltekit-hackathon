@@ -77,6 +77,9 @@
 	$: interval = pureIntervals[intervalIndex + 1].value;
 	let factor = 2;
 
+	function selectAll() {
+		$selected = $tree.slice();
+	}
 	function addChildUp() {
 		$selected.forEach((child) => child.addChild(interval));
 	}
@@ -140,6 +143,7 @@
 				<button on:click={updateInterval} style:background-color="#48f8">Update interval</button>
 				<button on:click={removeSelf} style:background-color="#f008">Remove</button>
 			{:else}
+				<button on:click={selectAll} style:background-color="#48f8">Select all notes</button>
 				<span>Select and edit a note or multiple notes</span>
 			{/if}
 		</div>
