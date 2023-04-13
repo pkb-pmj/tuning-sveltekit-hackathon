@@ -15,7 +15,7 @@
 	$: midpoint = start.add(pure.value);
 
 	function select() {
-		$selectedInterval = delta;
+		$selectedInterval = delta.abs();
 	}
 </script>
 
