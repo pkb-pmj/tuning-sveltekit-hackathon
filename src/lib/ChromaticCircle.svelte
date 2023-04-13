@@ -26,6 +26,12 @@
 	function clearStoredInterval() {
 		$storedInterval = null;
 	}
+	function multiplyStoredInterval() {
+		$storedInterval = $storedInterval!.mul(factor);
+	}
+	function divideStoredInterval() {
+		$storedInterval = $storedInterval!.div(factor);
+	}
 	$: {
 		if ($selected.length === 2) {
 			$selectedInterval = $selected[0].absInterval.sub($selected[1].absInterval).modSigned().abs();
@@ -69,6 +75,7 @@
 
 	let intervalIndex = 7;
 	$: interval = pureIntervals[intervalIndex + 1].value;
+	let factor = 2;
 
 	function addChildUp() {
 		$selected.forEach((child) => child.addChild(interval));
@@ -87,15 +94,18 @@
 		$selected = [];
 		$selectedInterval = null;
 	}
-	let intervalToDivide: Interval | null = null;
-	function selectForDivide() {
-		intervalToDivide = $selected[1].absInterval.sub($selected[0].absInterval).modSigned();
-		$selected = [];
-	}
-	function divideBetween() {
-		intervalToDivide = intervalToDivide!.div($selected.length);
+	function addToSelected() {
 		$selected.forEach((node) => {
-			node.setInterval(node.relInterval.add(intervalToDivide!));
+			const base = node.relInterval;
+			const sign = Math.sign(base.log2valueOf());
+			node.setInterval(base.add($storedInterval!.mul(sign)));
+		});
+	}
+	function subtractFromSelected() {
+		$selected.forEach((node) => {
+			const base = node.relInterval;
+			const sign = Math.sign(base.log2valueOf());
+			node.setInterval(base.sub($storedInterval!.mul(sign)));
 		});
 	}
 
@@ -105,8 +115,6 @@
 </script>
 
 <Waveform {frequencies} />
-<button on:click={selectForDivide} disabled={$selected.length !== 2}>Select for divide</button>
-<button on:click={divideBetween} disabled={$selected.length === 0}>Divide between</button>
 <div class="wrapper">
 	<div class="intervalBox">
 		{#if $selected.length > 0}
@@ -117,10 +125,12 @@
 					</option>
 				{/each}
 			</select>
-			<button on:click={addChildUp}>Add child (up)</button>
-			<button on:click={addChildDown}>Add child (down)</button>
-			<button on:click={updateInterval}> Update interval </button>
-			<button on:click={removeSelf}>Remove</button>
+			<div class="row">
+				<button on:click={addChildUp}>Add note up</button>
+				<button on:click={addChildDown}>Add note down</button>
+			</div>
+			<button on:click={updateInterval} style:background-color="#48f8">Update interval</button>
+			<button on:click={removeSelf} style:background-color="#f008">Remove</button>
 		{:else}
 			<span>Select and edit a note or multiple notes</span>
 		{/if}
@@ -140,9 +150,18 @@
 	<div class="intervalBox">
 		{#if $storedInterval}
 			<IntervalInfo interval={$storedInterval} />
-			<button style:background-color="#f008" on:click={clearStoredInterval}>
-				Clear stored interval
-			</button>
+			<input type="number" bind:value={factor} min="2" max="19" />
+			<div class="row">
+				<button style:background-color="#48f8" on:click={multiplyStoredInterval}>Multiply</button>
+				<button style:background-color="#48f8" on:click={divideStoredInterval}>Divide</button>
+			</div>
+			<div class="row">
+				<button style:background-color="#48f8" on:click={addToSelected}>Add to selected</button>
+				<button style:background-color="#48f8" on:click={subtractFromSelected}>
+					Subtract from selected
+				</button>
+			</div>
+			<button style:background-color="#f008" on:click={clearStoredInterval}>Clear </button>
 		{:else}
 			<span>Store an interval</span>
 		{/if}
@@ -174,7 +193,15 @@
 
 <style>
 	select {
+		display: block;
+		width: 100%;
 		cursor: pointer;
+		box-sizing: border-box;
+	}
+	input {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
 	}
 	button {
 		appearance: none;
@@ -193,18 +220,22 @@
 	}
 	.wrapper {
 		display: flex;
+		flex-flow: row nowrap;
+		justify-content: stretch;
+		align-items: stretch;
 		padding: 0.4em;
 		gap: 0.4em;
 	}
 	.intervalBox {
+		flex: 1 1 0;
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: space-between;
 		align-items: stretch;
-		width: 10em;
 		height: 10em;
-		padding: 0.5em;
-		border-radius: 0.5em;
+		padding: 0.4em;
+		gap: 0.4em;
+		border-radius: 0.4em;
 		background-color: #eee;
 	}
 	.intervalBox button {
@@ -218,6 +249,15 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+	.row {
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: stretch;
+		gap: 0.4em;
+	}
+	.row > button {
+		flex: 1;
 	}
 	svg {
 		user-select: none;
