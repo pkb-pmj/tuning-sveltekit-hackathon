@@ -84,5 +84,6 @@
 	};
 </script>
 
-<div bind:this={div} />
-<canvas bind:this={canvas} />
+<div bind:this={div}>
+	<canvas bind:this={canvas} />
+</div>
