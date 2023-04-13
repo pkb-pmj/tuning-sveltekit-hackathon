@@ -7,7 +7,7 @@
 	import type { Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
 	import Waveform from './Waveform.svelte';
-	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
+	import IntervalArc from './IntervalArc.svelte';
 	import IntervalInfo from './IntervalInfo.svelte';
 	import { setContext } from 'svelte';
 	import { pureIntervals } from './pureIntervals';
@@ -180,7 +180,7 @@
 	<g>
 		{#each $intervals as [start, delta]}
 			<g class="playing" on:click|stopPropagation={() => ($selectedInterval = delta)}>
-				<CompoundIntervalArc {start} {delta} radius={80} />
+					<IntervalArc {start} {delta} radius={80} selectable />
 			</g>
 		{/each}
 	</g>
