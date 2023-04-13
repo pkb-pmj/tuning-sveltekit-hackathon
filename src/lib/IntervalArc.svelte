@@ -37,6 +37,7 @@
 
 <style>
 	circle {
+		cursor: pointer;
 		stroke: var(--color);
 		stroke-width: 4px;
 		fill: none;
