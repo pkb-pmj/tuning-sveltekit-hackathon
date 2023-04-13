@@ -72,7 +72,7 @@
 		--color: green;
 	}
 	g.wrapper:hover {
-		--opacity: 0.6;
+		--opacity: 0.4;
 	}
 	.transform {
 		transition: transform 1s;

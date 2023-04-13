@@ -121,82 +121,88 @@
 <svelte:window on:keydown={onKeyDown} />
 <Waveform {frequencies} />
 <div class="wrapper">
-	<div class="intervalBox">
-		{#if $selected.length > 0}
-			<select bind:value={intervalIndex}>
-				{#each pureIntervals.slice(1) as pure, i}
-					<option value={i}>
-						{pure.value.frac()} – {pure.name}
-					</option>
-				{/each}
-			</select>
-			<div class="row">
-				<button on:click={addChildUp}>Add note up</button>
-				<button on:click={addChildDown}>Add note down</button>
-			</div>
-			<button on:click={updateInterval} style:background-color="#48f8">Update interval</button>
-			<button on:click={removeSelf} style:background-color="#f008">Remove</button>
-		{:else}
-			<span>Select and edit a note or multiple notes</span>
-		{/if}
-	</div>
-	<div class="intervalBox">
-		{#if $selectedInterval}
-			<IntervalInfo interval={$selectedInterval} />
-			<button style:background-color="#48f8" on:click={storeInterval}>
-				Store selected interval
-			</button>
-		{:else if $selected.length > 1}
-			<span>{$selected.length} intervals selected</span>
-		{:else}
-			<span>Select an interval</span>
-		{/if}
-	</div>
-	<div class="intervalBox">
-		{#if $storedInterval}
-			<IntervalInfo interval={$storedInterval} />
-			<input type="number" bind:value={factor} min="2" max="19" />
-			<div class="row">
-				<button style:background-color="#48f8" on:click={multiplyStoredInterval}>Multiply</button>
-				<button style:background-color="#48f8" on:click={divideStoredInterval}>Divide</button>
-			</div>
-			<div class="row">
-				<button style:background-color="#48f8" on:click={addToSelected}>Add to selected</button>
-				<button style:background-color="#48f8" on:click={subtractFromSelected}>
-					Subtract from selected
+	<div class="toolbar">
+		<div class="intervalBox">
+			{#if $selected.length > 0}
+				<select bind:value={intervalIndex}>
+					{#each pureIntervals.slice(1) as pure, i}
+						<option value={i}>
+							{pure.value.frac()} – {pure.name}
+						</option>
+					{/each}
+				</select>
+				<div class="row">
+					<button on:click={addChildUp}>Add note up</button>
+					<button on:click={addChildDown}>Add note down</button>
+				</div>
+				<button on:click={updateInterval} style:background-color="#48f8">Update interval</button>
+				<button on:click={removeSelf} style:background-color="#f008">Remove</button>
+			{:else}
+				<span>Select and edit a note or multiple notes</span>
+			{/if}
+		</div>
+		<div class="intervalBox">
+			{#if $selectedInterval}
+				<IntervalInfo interval={$selectedInterval} />
+				<button style:background-color="#48f8" on:click={storeInterval}>
+					Store selected interval
 				</button>
-			</div>
-			<button style:background-color="#f008" on:click={clearStoredInterval}>Clear </button>
-		{:else}
-			<span>Store an interval</span>
-		{/if}
+			{:else if $selected.length > 1}
+				<span>{$selected.length} intervals selected</span>
+			{:else}
+				<span>Select an interval</span>
+			{/if}
+		</div>
+		<div class="intervalBox">
+			{#if $storedInterval}
+				<IntervalInfo interval={$storedInterval} />
+				<input type="number" bind:value={factor} min="2" max="19" />
+				<div class="row">
+					<button style:background-color="#48f8" on:click={multiplyStoredInterval}>Multiply</button>
+					<button style:background-color="#48f8" on:click={divideStoredInterval}>Divide</button>
+				</div>
+				<div class="row">
+					<button style:background-color="#48f8" on:click={addToSelected}>Add to selected</button>
+					<button style:background-color="#48f8" on:click={subtractFromSelected}>
+						Subtract from selected
+					</button>
+				</div>
+				<button style:background-color="#f008" on:click={clearStoredInterval}>Clear </button>
+			{:else}
+				<span>Store an interval</span>
+			{/if}
+		</div>
 	</div>
-</div>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
-	<g>
-		<ChromaticCircleNoteSlices labels={keyLabelsEn} {keyboard} />
-	</g>
-	<g>
-		{#each cents as i}
-			<CentLine {i} />
-		{/each}
-	</g>
-	<g>
-		{#each $intervals as [start, delta]}
-			<g class="playing" on:click|stopPropagation={() => ($selectedInterval = delta)}>
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
+		<g>
+			<ChromaticCircleNoteSlices labels={keyLabelsEn} {keyboard} />
+		</g>
+		<g>
+			{#each cents as i}
+				<CentLine {i} />
+			{/each}
+		</g>
+		<g>
+			{#each $intervals as [start, delta]}
+				<g class="playing" on:click|stopPropagation={() => ($selectedInterval = delta)}>
 					<IntervalArc {start} {delta} radius={80} selectable />
-			</g>
-		{/each}
-	</g>
-	<g>
-		{#each $tree as node (node)}
-			<ChromaticCircleNode {node} {playing} {selected} />
-		{/each}
-	</g>
-</svg>
+				</g>
+			{/each}
+		</g>
+		<g>
+			{#each $tree as node (node)}
+				<ChromaticCircleNode {node} {playing} {selected} />
+			{/each}
+		</g>
+	</svg>
+</div>
 
 <style>
+	.wrapper {
+		display: flex;
+		flex-flow: row wrap;
+	}
 	select {
 		display: block;
 		width: 100%;
@@ -223,9 +229,10 @@
 		background-color: #bbb;
 		cursor: not-allowed;
 	}
-	.wrapper {
+	.toolbar {
+		flex: 1 0 min-content;
 		display: flex;
-		flex-flow: row nowrap;
+		flex-flow: row wrap;
 		justify-content: stretch;
 		align-items: stretch;
 		padding: 0.4em;
@@ -265,6 +272,9 @@
 		flex: 1;
 	}
 	svg {
+		max-width: 100vw;
+		max-height: 100vh;
+		aspect-ratio: 1;
 		user-select: none;
 	}
 	g.playing {
@@ -276,5 +286,8 @@
 	}
 	g.playing:last-child:not(:nth-child(2n)) {
 		--color: green;
+	}
+	g.playing:hover {
+		--opacity: 0.4;
 	}
 </style>
