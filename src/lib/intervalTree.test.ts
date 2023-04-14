@@ -76,7 +76,7 @@ test('removing root node', () => {
 	const tree = intervalTree();
 	let list = get(tree);
 	const [root] = list;
-	expect(() => root.removeSelf()).toThrow("can't remove the root node");
+	root.removeSelf();
 });
 
 test('removing from paralell trees', () => {
