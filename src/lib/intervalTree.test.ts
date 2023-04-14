@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { expect, test } from 'vitest';
 import { Interval } from './interval';
-import { intervalTree, type Node } from './intervalTree';
+import { intervalTree, type IntervalTreeJSON, type Node } from './intervalTree';
 
 function intervalsFromStrings(fractions: string[]): Interval[] {
 	return fractions.map((frac) => new Interval(frac));
@@ -143,4 +143,30 @@ test('updating interval', () => {
 
 	fifth.setInterval(new Interval('4/3'));
 	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '5/3']));
+});
+
+test('exporting to JSON', () => {
+	const tree = intervalTree();
+	let list = get(tree);
+	const [root] = list;
+	tree.subscribe((value) => (list = value));
+
+	root.addChild(new Interval('4/3'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3']));
+
+	const fourth = list[1];
+	fourth.addChild(new Interval('5/4'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '5/3']));
+
+	root.addChild(new Interval('3/2'));
+	expect(intervalsFromNodes(list)).toEqual(intervalsFromStrings(['1', '4/3', '3/2', '5/3']));
+
+	root.addChild(new Interval('3/2').div(4));
+
+	const json = root.toJSON();
+
+	const newTree = intervalTree();
+	const [newRoot] = get(newTree);
+	newRoot.addFromJSON(json);
+	expect(newRoot).toEqual(root);
 });

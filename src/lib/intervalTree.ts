@@ -12,6 +12,12 @@ export interface Node {
 	removeSelf(): void;
 	setInterval(interval: Interval): void;
 	pathTo(other: Node): Node[];
+	toJSON(): IntervalTreeJSON;
+	addFromJSON(json: IntervalTreeJSON): void;
+}
+
+export interface IntervalTreeJSON {
+	[K: string]: IntervalTreeJSON;
 }
 
 export const cmp = (a: Node, b: Node) => a.absInterval.log2valueOf() - b.absInterval.log2valueOf();
@@ -101,6 +107,18 @@ export function intervalTree(): Readable<Node[]> {
 			return thisAncestors
 				.slice(0, thisIndex + 1)
 				.concat(otherAncestors.slice(0, otherIndex).reverse());
+		}
+
+		toJSON(): IntervalTreeJSON {
+			return Object.fromEntries(
+				this.children.map((child) => [child.relInterval.toString(), child.toJSON()]),
+			);
+		}
+
+		addFromJSON(json: IntervalTreeJSON) {
+			for (const str in json) {
+				this.addChild(Interval.fromString(str)).addFromJSON(json[str]);
+			}
 		}
 	}
 
