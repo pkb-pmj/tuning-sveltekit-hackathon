@@ -7,7 +7,7 @@
 	export let vertical = false;
 	export let display: 'block' | 'inline' = 'inline';
 
-	$: ({ rational, irrational } = interval.mathML());
+	$: ({ rational, irrational } = interval.toMathML());
 	$: num = irrational.filter(({ exp }) => exp.s === 1);
 	$: den = irrational.filter(({ exp }) => exp.s === -1);
 </script>

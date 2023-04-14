@@ -183,3 +183,19 @@ test.each([
 	const actual = interval1.div(div).modSigned();
 	expect(actual.valueOf()).toBeCloseTo(expected, 10);
 });
+
+test('export to MathML string', () => {
+	let interval = new Interval('3/2');
+	expect(interval.toString()).toStrictEqual('3/2');
+
+	interval = interval.div(4);
+	expect(interval.toString()).toStrictEqual('1*2^-1/4*3^1/4');
+});
+
+test('import from MathML string', () => {
+	let interval = Interval.fromString('3/2');
+	expect(interval.valueOf()).toBeCloseTo(3 / 2);
+
+	interval = Interval.fromString('1*2^-1/4*3^1/4');
+	expect(interval.valueOf()).toBeCloseTo((3 / 2) ** (1 / 4));
+});

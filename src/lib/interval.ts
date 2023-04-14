@@ -130,18 +130,11 @@ export class Interval {
 		return this.log2valueOf() * 1200;
 	}
 
-	toString(): string {
-		return this.factors
-			.filter((exp) => !exp.equals(0)) // filtering changes indexes!
-			.map((exp, i) => `${primes[i]}^${exp.toFraction()}`)
-			.join('*');
-	}
-
 	clone(): Interval {
 		return structuredClone(this);
 	}
 
-	mathML(): MathML {
+	toMathML(): MathML {
 		const rational = this.factors
 			.map((exp, i) => ({ exp: exp.abs().floor().n * exp.s, base: primes[i] }))
 			.reduce((acc, { exp, base }) => {
@@ -153,6 +146,36 @@ export class Interval {
 			.filter(({ exp }) => !exp.equals(0));
 
 		return { rational, irrational };
+	}
+
+	static fromMathML(value: MathML): Interval {
+		const interval = new Interval(value.rational);
+		for (const { base, exp } of value.irrational) {
+			const i = primes.indexOf(base);
+			interval.factors[i] = interval.factors[i].add(exp);
+		}
+		return interval;
+	}
+
+	toString(): string {
+		const mathML = this.toMathML();
+		return [
+			mathML.rational.toFraction(),
+			...mathML.irrational.map(({ base, exp }) => `${base}^${exp.toFraction()}`),
+		].join('*');
+	}
+
+	static fromString(str: string): Interval {
+		const [rational, ...irrational] = str.split('*');
+		return Interval.fromMathML({
+			rational: new Fraction(rational),
+			irrational: irrational
+				.map((str) => str.split('^') as [string, string])
+				.map(([base, exp]) => ({
+					base: parseInt(base),
+					exp: new Fraction(exp),
+				})),
+		});
 	}
 }
 
