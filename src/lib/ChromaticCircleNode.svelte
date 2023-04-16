@@ -4,10 +4,12 @@
 	import SoundGenerator from './SoundGenerator.svelte';
 	import IntervalMathMl from './IntervalMathML.svelte';
 	import CompoundIntervalArc from './CompoundIntervalArc.svelte';
+	import { getContext } from 'svelte';
 
 	export let node: Node;
 	export let playing: Readable<Node[]>;
-	export let selected: Writable<Node[]>;
+
+	const selected = getContext<Writable<Node[]>>('selectedNotes');
 
 	function onClick(event: MouseEvent) {
 		if (event.shiftKey) {

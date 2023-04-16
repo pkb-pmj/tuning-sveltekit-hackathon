@@ -88,7 +88,7 @@
 		</g>
 		<g>
 			{#each $tree as node (node)}
-				<ChromaticCircleNode {node} {playing} selected={selectedNotes} />
+				<ChromaticCircleNode {node} {playing} />
 			{/each}
 		</g>
 	</svg>
