@@ -14,6 +14,7 @@ export interface Node {
 	pathTo(other: Node): Node[];
 	toJSON(): IntervalTreeJSON;
 	addFromJSON(json: IntervalTreeJSON): void;
+	updateFromJSON(json: IntervalTreeJSON): void;
 }
 
 export interface IntervalTreeJSON {
@@ -121,6 +122,48 @@ export function intervalTree(): IntervalTree {
 				this.addChild(Interval.fromString(str)).addFromJSON(json[str]);
 			}
 		}
+
+		updateFromJSON(json: IntervalTreeJSON) {
+			const newChildren = Object.entries(json)
+				.map(([key, val]) => ({ interval: Interval.fromString(key), json: val }))
+				.sort((a, b) => a.interval.log2valueOf() - b.interval.log2valueOf());
+
+			const distance = distanceMatrix(this.children, newChildren, (a, b) =>
+				Math.abs(a.relInterval.log2valueOf() - b.interval.log2valueOf()),
+			);
+
+			const { zeroRows, zeroCols, nonZeroRows, nonZeroCols } = splitIntoZeroAndNonZero(
+				distance,
+				newChildren.length,
+			);
+
+			// Update those which don't need updating
+			zeroRows.forEach((i, j) => {
+				this.children[i].updateFromJSON(newChildren[zeroCols[j]].json);
+			});
+
+			// Update
+			nonZeroRows.slice(0, nonZeroCols.length).forEach((i, j) => {
+				j = nonZeroCols[j];
+				const oldChild = this.children[i];
+				const newChild = newChildren[j];
+				oldChild.setInterval(newChild.interval);
+				oldChild.updateFromJSON(newChild.json);
+			});
+
+			// Remove if too many
+			nonZeroRows.slice(nonZeroCols.length).forEach((i) => {
+				const oldChild = this.children[i];
+				oldChild.removeSelf();
+			});
+
+			// Add if too few
+			nonZeroCols.slice(nonZeroRows.length).forEach((j) => {
+				const newChild = newChildren[j];
+				const oldChild = this.addChild(newChild.interval);
+				oldChild.updateFromJSON(newChild.json);
+			});
+		}
 	}
 
 	const root = new NodeClass();
@@ -140,4 +183,49 @@ export function intervalTree(): IntervalTree {
 	const { set, subscribe } = writable(nodes);
 
 	return { subscribe, update };
+}
+
+function distanceMatrix<T, U>(a: T[], b: U[], cmp: (a: T, b: U) => number) {
+	return a.map((a) => b.map((b) => cmp(a, b)));
+}
+
+function splitIntoZeroAndNonZero(matrix: number[][], numCols: number) {
+	const rows = matrix.map(() => true);
+	const cols = matrix[0]?.map(() => true) ?? Array(numCols).fill(true);
+
+	for (let i = 0; i < matrix.length; i++) {
+		if (!rows[i]) continue;
+		for (let j = 0; j < matrix[i].length; j++) {
+			if (!cols[j]) continue;
+			if (matrix[i][j] === 0) {
+				rows[i] = false;
+				cols[j] = false;
+				break;
+			}
+		}
+	}
+
+	const nonZeroRows = rows
+		.map((val, i) => ({ val, i }))
+		.filter(({ val }) => val)
+		.map(({ i }) => i);
+
+	const zeroRows = rows
+		.map((val, i) => ({ val, i }))
+		.filter(({ val }) => !val)
+		.map(({ i }) => i);
+
+	const nonZeroCols = cols
+		.map((val, i) => ({ val, i }))
+		.filter(({ val }) => val)
+		.map(({ i }) => i);
+
+	const zeroCols = cols
+		.map((val, i) => ({ val, i }))
+		.filter(({ val }) => !val)
+		.map(({ i }) => i);
+
+	const nonZero = nonZeroRows.map((i) => nonZeroCols.map((j) => matrix[i][j]));
+
+	return { matrix, rows, cols, zeroRows, zeroCols, nonZeroRows, nonZeroCols, nonZero };
 }

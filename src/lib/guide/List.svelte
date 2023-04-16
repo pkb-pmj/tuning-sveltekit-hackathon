@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
-	import type { Node } from '$lib/intervalTree';
+	import type { IntervalTree, Node } from '$lib/intervalTree';
 
+	export let tree: IntervalTree;
 	export let root: Node;
 
 	setContext('root', root);
+	setContext('intervalTree', tree);
 </script>
 
 <ol>

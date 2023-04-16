@@ -12,7 +12,7 @@
 </script>
 
 <ChromaticCircle {tree} {keyboard} />
-<List {root}>
+<List {tree} {root}>
 	{#each meantone as { text, data }}
 		<ListItem json={data}>{text}</ListItem>
 	{/each}
