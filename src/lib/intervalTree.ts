@@ -119,6 +119,7 @@ export function intervalTree(): Readable<Node[]> {
 			for (const str in json) {
 				this.addChild(Interval.fromString(str)).addFromJSON(json[str]);
 			}
+			updateTree();
 		}
 	}
 
