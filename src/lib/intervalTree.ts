@@ -20,9 +20,13 @@ export interface IntervalTreeJSON {
 	[K: string]: IntervalTreeJSON;
 }
 
+export interface IntervalTree extends Readable<Node[]> {
+	update: () => void;
+}
+
 export const cmp = (a: Node, b: Node) => a.absInterval.log2valueOf() - b.absInterval.log2valueOf();
 
-export function intervalTree(): Readable<Node[]> {
+export function intervalTree(): IntervalTree {
 	class NodeClass implements Node {
 		relInterval: Interval;
 		absInterval!: Interval;
@@ -42,7 +46,6 @@ export function intervalTree(): Readable<Node[]> {
 			this.children.push(child);
 			this.children.sort(cmp);
 			nodes.push(child);
-			updateTree();
 			return child;
 		}
 
@@ -53,14 +56,12 @@ export function intervalTree(): Readable<Node[]> {
 			else this.parent.children.splice(index, 1);
 			const toRemove = this.traverseBreadthFirst();
 			nodes = nodes.filter((node) => !toRemove.includes(node));
-			updateTree();
 		}
 
 		setInterval(interval: Interval) {
 			this.relInterval = interval;
 			this.parent?.children.sort(cmp);
 			this.traverseBreadthFirst((node) => node.updateAbsoluteInterval());
-			updateTree();
 		}
 
 		private updateAbsoluteInterval() {
@@ -119,13 +120,12 @@ export function intervalTree(): Readable<Node[]> {
 			for (const str in json) {
 				this.addChild(Interval.fromString(str)).addFromJSON(json[str]);
 			}
-			updateTree();
 		}
 	}
 
 	const root = new NodeClass();
 
-	function updateTree() {
+	function update() {
 		let index = 0;
 		root.traverseDepthFirst((node) => {
 			node.index = index++;
@@ -139,5 +139,5 @@ export function intervalTree(): Readable<Node[]> {
 	let nodes = [root];
 	const { set, subscribe } = writable(nodes);
 
-	return { subscribe };
+	return { subscribe, update };
 }

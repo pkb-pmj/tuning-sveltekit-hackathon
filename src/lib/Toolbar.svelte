@@ -2,11 +2,11 @@
 	import { getContext } from 'svelte';
 	import type { Readable, Writable } from 'svelte/store';
 	import type { Interval } from './interval';
-	import type { Node } from './intervalTree';
+	import type { IntervalTree, Node } from './intervalTree';
 	import { pureIntervals } from './pureIntervals';
 	import IntervalInfo from './IntervalInfo.svelte';
 
-	const intervalTree = getContext<Readable<Node[]>>('intervalTree');
+	const intervalTree = getContext<IntervalTree>('intervalTree');
 	const selectedInterval = getContext<Writable<Interval | null>>('selectedInterval');
 	const storedInterval = getContext<Writable<Interval | null>>('storedInterval');
 	const selectedNotes = getContext<Writable<Node[]>>('selectedNotes');
@@ -19,20 +19,24 @@
 
 	function addNoteUp() {
 		$selectedNotes.forEach((child) => child.addChild(interval));
+		intervalTree.update();
 	}
 	function addNoteDown() {
 		$selectedNotes.forEach((child) => child.addChild(interval.mul(-1)));
+		intervalTree.update();
 	}
 	function updateInterval() {
 		$selectedNotes.forEach((child) =>
 			child.setInterval(interval.mul(Math.sign(child.relInterval.log2valueOf()))),
 		);
+		intervalTree.update();
 	}
 	function selectAll() {
 		$selectedNotes = $intervalTree.slice();
 	}
 	function deleteNotes() {
 		$selectedNotes.forEach((child) => child.removeSelf());
+		intervalTree.update();
 	}
 
 	function storeInterval() {
@@ -45,6 +49,7 @@
 			const sign = Math.sign(base.log2valueOf());
 			node.setInterval(base.add($storedInterval!.mul(sign)));
 		});
+		intervalTree.update();
 	}
 	function subtractFromSelected() {
 		$selectedNotes.forEach((node) => {
@@ -52,6 +57,7 @@
 			const sign = Math.sign(base.log2valueOf());
 			node.setInterval(base.sub($storedInterval!.mul(sign)));
 		});
+		intervalTree.update();
 	}
 	function clearStoredInterval() {
 		$storedInterval = null;

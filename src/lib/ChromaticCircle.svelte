@@ -4,14 +4,14 @@
 	import ChromaticCircleNode from './ChromaticCircleNode.svelte';
 	import ChromaticCircleNoteSlices from './ChromaticCircleNoteSlices.svelte';
 	import type { Interval } from './interval';
-	import type { Node } from './intervalTree';
+	import type { IntervalTree, Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
 	import Waveform from './Waveform.svelte';
 	import IntervalArc from './IntervalArc.svelte';
 	import { setContext } from 'svelte';
 	import Toolbar from './Toolbar.svelte';
 
-	export let tree: Readable<Node[]>;
+	export let tree: IntervalTree;
 	export let keyboard: KeyboardStore;
 
 	const selectedInterval = writable<Interval | null>(null);
