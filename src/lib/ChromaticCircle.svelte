@@ -10,6 +10,7 @@
 	import IntervalArc from './IntervalArc.svelte';
 	import { setContext } from 'svelte';
 	import Toolbar from './Toolbar.svelte';
+	import { AppHistory } from './history';
 
 	export let tree: IntervalTree;
 	export let keyboard: KeyboardStore;
@@ -64,8 +65,35 @@
 	const cents = Array(240)
 		.fill(0)
 		.map((_, i) => i * 5);
+
+	const root = $tree[0];
+	const history = new AppHistory(root.toJSON());
+	let historyFlag = false;
+
+	function onKeyDown(evt: KeyboardEvent) {
+		if ((evt.key === 'Z' || evt.key === 'z') && (evt.ctrlKey || evt.metaKey)) {
+			if (evt.shiftKey) {
+				root.updateFromJSON(history.forward());
+			} else {
+				root.updateFromJSON(history.backward());
+			}
+			historyFlag = false;
+			tree.update();
+		}
+	}
+
+	function pushToHistory(_tree: Node[]) {
+		if (historyFlag) {
+			history.push(root.toJSON());
+		} else {
+			historyFlag = true;
+		}
+	}
+
+	$: pushToHistory($tree);
 </script>
 
+<svelte:window on:keydown={onKeyDown} />
 <Waveform {frequencies} />
 <div class="wrapper">
 	<Toolbar />
