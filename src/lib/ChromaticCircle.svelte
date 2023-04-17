@@ -6,9 +6,7 @@
 	import type { Interval } from './interval';
 	import type { IntervalTree, Node } from './intervalTree';
 	import { keyLabelsEn, type KeyboardStore } from './keyboard';
-	import Waveform from './Waveform.svelte';
 	import IntervalArc from './IntervalArc.svelte';
-	import Toolbar from './Toolbar.svelte';
 	import { AppHistory } from './history';
 	import { getContext } from 'svelte';
 
@@ -62,47 +60,41 @@
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
-<Waveform {frequencies} />
-<div class="wrapper">
-	<Toolbar />
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
-		<g>
-			<ChromaticCircleNoteSlices labels={keyLabelsEn} {keyboard} />
-		</g>
-		<g>
-			{#each cents as i}
-				<CentLine {i} />
-			{/each}
-		</g>
-		<g>
-			{#each $intervals as [start, delta]}
-				<g class="playing" on:click|stopPropagation={() => ($selectedInterval = delta)}>
-					<IntervalArc {start} {delta} radius={80} selectable />
-				</g>
-			{/each}
-		</g>
-		<g>
-			{#each $tree as node (node)}
-				<ChromaticCircleNode {node} {playing} />
-			{/each}
-		</g>
-	</svg>
-</div>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" on:click={unselect}>
+	<g>
+		<ChromaticCircleNoteSlices labels={keyLabelsEn} {keyboard} />
+	</g>
+	<g>
+		{#each cents as i}
+			<CentLine {i} />
+		{/each}
+	</g>
+	<g>
+		{#each $intervals as [start, delta]}
+			<g class="playing" on:click|stopPropagation={() => ($selectedInterval = delta)}>
+				<IntervalArc {start} {delta} radius={80} selectable />
+			</g>
+		{/each}
+	</g>
+	<g>
+		{#each $tree as node (node)}
+			<ChromaticCircleNode {node} {playing} />
+		{/each}
+	</g>
+</svg>
 
 <style>
-	.wrapper {
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: stretch;
-		gap: 0.5em;
-	}
 	svg {
 		min-width: 60vmin;
-		min-height: 60vmin;
 		max-height: 100%;
 		aspect-ratio: 1;
 		user-select: none;
+	}
+	@media (min-aspect-ratio: 1/1) {
+		svg {
+			min-height: calc(100vh - 100px - 2em);
+		}
 	}
 	g.playing {
 		--color: red;

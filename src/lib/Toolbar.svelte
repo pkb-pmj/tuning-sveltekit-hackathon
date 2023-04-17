@@ -85,67 +85,59 @@
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
-<div class="toolbar">
-	<div class="panel">
-		<select bind:value={intervalIndex}>
-			{#each pureIntervals.slice(1, -1) as pure, i}
-				<option value={i}>
-					{pure.value.frac()} – {pure.name}
-				</option>
-			{/each}
-		</select>
-		<div class="twoButtons">
-			<button on:click={addNoteUp} class="green" disabled={!editing}>Add note up</button>
-			<button on:click={addNoteDown} class="green" disabled={!editing}>Add note down</button>
+<div class="panel">
+	<select bind:value={intervalIndex}>
+		{#each pureIntervals.slice(1, -1) as pure, i}
+			<option value={i}>
+				{pure.value.frac()} – {pure.name}
+			</option>
+		{/each}
+	</select>
+	<div class="twoButtons">
+		<button on:click={addNoteUp} class="green" disabled={!editing}>Add note up</button>
+		<button on:click={addNoteDown} class="green" disabled={!editing}>Add note down</button>
+	</div>
+	<button on:click={updateInterval} class="blue" disabled={!editing}>Update interval</button>
+	<button on:click={selectAll} class="blue">Select all notes</button>
+	<button on:click={deleteNotes} class="red" disabled={!editing}>Delete</button>
+</div>
+<div class="panel">
+	{#if $selectedInterval}
+		<div class="intervalInfo">
+			<IntervalInfo interval={$selectedInterval} />
 		</div>
-		<button on:click={updateInterval} class="blue" disabled={!editing}>Update interval</button>
-		<button on:click={selectAll} class="blue">Select all notes</button>
-		<button on:click={deleteNotes} class="red" disabled={!editing}>Delete</button>
-	</div>
-	<div class="panel">
-		{#if $selectedInterval}
-			<div class="intervalInfo">
-				<IntervalInfo interval={$selectedInterval} />
-			</div>
-			<button class="blue" on:click={storeInterval}> Store selected interval </button>
-		{:else if $selectedNotes.length > 1}
-			<span>{$selectedNotes.length} intervals selected</span>
-		{:else}
-			<span>Select an interval</span>
-		{/if}
-	</div>
-	<div class="panel">
-		{#if $storedInterval}
-			<div class="intervalInfo">
-				<IntervalInfo interval={$storedInterval} />
-			</div>
-			<div class="factorInput">
-				<div class="twoButtons">
-					<button class="blue" on:click={multiplyStoredInterval}>Multiply by</button>
-					<button class="blue" on:click={divideStoredInterval}>Divide by</button>
-				</div>
-				<input type="number" bind:value={factor} min="2" max="19" />
-			</div>
+		<button class="blue" on:click={storeInterval}> Store selected interval </button>
+	{:else if $selectedNotes.length > 1}
+		<span>{$selectedNotes.length} intervals selected</span>
+	{:else}
+		<span>Select an interval</span>
+	{/if}
+</div>
+<div class="panel">
+	{#if $storedInterval}
+		<div class="intervalInfo">
+			<IntervalInfo interval={$storedInterval} />
+		</div>
+		<div class="factorInput">
 			<div class="twoButtons">
-				<button class="green" on:click={addToSelected}>Add to selected</button>
-				<button class="green" on:click={subtractFromSelected}> Subtract from selected </button>
+				<button class="blue" on:click={multiplyStoredInterval}>Multiply by</button>
+				<button class="blue" on:click={divideStoredInterval}>Divide by</button>
 			</div>
-			<button class="red" on:click={clearStoredInterval}>Clear </button>
-		{:else}
-			<span>Store an interval</span>
-		{/if}
-	</div>
+			<input type="number" bind:value={factor} min="2" max="19" />
+		</div>
+		<div class="twoButtons">
+			<button class="green" on:click={addToSelected}>Add to selected</button>
+			<button class="green" on:click={subtractFromSelected}> Subtract from selected </button>
+		</div>
+		<button class="red" on:click={clearStoredInterval}>Clear </button>
+	{:else}
+		<span>Store an interval</span>
+	{/if}
 </div>
 
 <style>
-	.toolbar {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: center;
-		align-items: stretch;
-		gap: 0.5em;
-	}
 	.panel {
+		flex: 1 0 10em;
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: space-between;
