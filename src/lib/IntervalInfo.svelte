@@ -21,12 +21,13 @@
 			{remainder.log2valueOf() < 0 ? '-' : remainder.log2valueOf() > 0 ? '+' : ''}
 		{/if}
 		{#if comma === null}
-			<IntervalMathMl interval={remainder} display="inline" vertical />
+			{Math.abs(remainder.cents()).toFixed(2)} cents
 		{:else if comma.diff.n !== 0}
 			{#if comma.diff.n !== comma.diff.d}
 				{comma.diff.n}{#if comma.diff.d !== 1}/{comma.diff.d}{/if}
 			{/if}
 			{comma.name}
+			({Math.abs(remainder.cents()).toFixed(2)} cents)
 		{/if}
 	</div>
 </div>
