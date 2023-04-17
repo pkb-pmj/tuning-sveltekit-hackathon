@@ -36,6 +36,7 @@
 		column-gap: var(--gap);
 		border-radius: calc(var(--radius) + var(--gap));
 		user-select: none;
+		touch-action: none;
 	}
 	.black {
 		grid-row: 1 / 2;

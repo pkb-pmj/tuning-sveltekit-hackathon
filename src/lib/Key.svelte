@@ -4,7 +4,10 @@
 	export let column: number = 0;
 	export let key: Key;
 
+	let div: HTMLDivElement;
+
 	function press(event: PointerEvent) {
+		div.releasePointerCapture(event.pointerId);
 		if (event.buttons & 1) {
 			key.clicked = true;
 		}
@@ -15,6 +18,7 @@
 </script>
 
 <div
+	bind:this={div}
 	on:pointerdown={press}
 	on:pointerup={release}
 	on:pointerenter={press}
@@ -64,7 +68,6 @@
 		background-color: #fff;
 		color: #000;
 	}
-	.white:hover,
 	.white.pressed {
 		background-color: #afa;
 	}
@@ -80,8 +83,15 @@
 		background-color: #111;
 		color: #fff;
 	}
-	.black:hover,
 	.black.pressed {
 		background-color: #161;
+	}
+	@media (hover: hover) {
+		.white:hover {
+			background-color: #afa;
+		}
+		.black:hover {
+			background-color: #161;
+		}
 	}
 </style>
