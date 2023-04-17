@@ -45,9 +45,11 @@
 		<div class="list">
 			<Tabs {tree} {root} />
 		</div>
+		<div class="keyboard">
+			<Keyboard {keyboard} />
+		</div>
 	</div>
 </div>
-<Keyboard {keyboard} />
 
 <style>
 	.wrapper {
@@ -55,6 +57,7 @@
 		flex-flow: row wrap;
 		justify-content: stretch;
 		align-items: stretch;
+		gap: 0.5em;
 	}
 	.circle {
 		flex: 2;
@@ -66,6 +69,7 @@
 		flex-flow: column nowrap;
 		justify-content: stretch;
 		align-items: stretch;
+		gap: 0.5em;
 	}
 	.toolbar {
 		display: flex;
@@ -75,11 +79,10 @@
 		gap: 0.5em;
 	}
 	.list {
-		flex: 1 0 15em;
-		padding: 0.5em;
+		flex: content;
 		--hue: 0;
 		--saturation: 0%;
-		--value: 90%;
+		--value: 70%;
 		--alpha: 0.4;
 	}
 </style>

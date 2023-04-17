@@ -38,26 +38,28 @@
 		flex-flow: column;
 		justify-content: end;
 		align-items: center;
-		padding-bottom: 1em;
+		padding-bottom: 0.6em;
 		transition: background-color 0.1s;
 		pointer-events: all;
 	}
 	span {
 		display: block;
 		flex: 0 0 min-content;
-		font-size: 1.6em;
+		font-size: 1.2em;
 		font-family: sans-serif;
+		text-align: center;
+		line-height: 1.2em;
 	}
 	span:last-child {
 		color: #888;
-		font-size: 1.2em;
+		font-size: 0.9em;
 	}
 	.white span {
-		font-size: 2em;
+		font-size: 1.6em;
 	}
 	.white span:last-child {
 		color: #888;
-		font-size: 1.5em;
+		font-size: 1.2em;
 	}
 	.white {
 		grid-row: 1 / -1;

@@ -59,7 +59,7 @@
 		margin-top: 0.5em;
 		padding: 0.5em;
 		border-radius: 0.5em;
-		background-color: #eee;
+		background-color: #ddd;
 		--saturation: 0%;
 		--value: 100%;
 		--alpha: 1;
@@ -84,7 +84,7 @@
 	li:hover {
 		--hue: 120;
 		--saturation: 80%;
-		--value: 80%;
+		--value: 60%;
 	}
 	li.checked {
 		--hue: 0;
@@ -92,7 +92,7 @@
 		--hue: 220;
 		--hue: 220;
 		--saturation: 80%;
-		--value: 80%;
+		--value: 60%;
 		--alpha: 0.4;
 	}
 	li:hover {

@@ -26,7 +26,11 @@
 
 <style>
 	.container {
-		background-color: #888;
+		box-sizing: border-box;
+		width: 100%;
+		min-height: 12em;
+		height: 100%;
+		background-color: #ddd;
 		--gap: 0.4rem;
 		--radius: 0.5rem;
 		display: grid;
