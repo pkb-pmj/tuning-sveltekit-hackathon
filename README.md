@@ -10,6 +10,8 @@ I focused on getting it to work properly, so the layout, styling, accessibility 
 
 It _does work_ on mobile, but desktop experience is definitely better.
 
+Also it's the first time I've been working alone non-stop on a single project for four weeks straight, in the then mostly unknown territory of SVG, CSS transforms and animations, Web Audio, and other not-your-typical-web-app things. And it's my first MVP-kind-of-finished public project. I guess hackathons can really boost your abilities in quite a short time :D
+
 # How to
 
 I didn't have time to make a good self-explanatory UI or tutorial, so... just click random things until you figure it out.
@@ -25,7 +27,7 @@ Cents are a logarithmic scale for measuring intervals and their deviations from 
 
 You can prove mathematically that it's impossible to divide the octave (2/1) into equal pure intervals - no rational number raised to a whole power will ever equal 2.
 
-*That's a problem*, because you want intervals to be pure because they sound good, but you also want them to be equal, to make every key/chord sound good too. But you can't have both.
+_That's a problem_, because you want intervals to be pure because they sound good, but you also want them to be equal, to make every key/chord sound good too. But you can't have both.
 
 Over the course of history, people have come up with different tuning systems and temperations, each of which has its own advantages and disadvantages. Here you can explore some of them, or create your own.
 
