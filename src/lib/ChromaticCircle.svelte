@@ -130,8 +130,9 @@
 		gap: 0.5em;
 	}
 	svg {
-		max-width: 100vw;
-		max-height: 100vh;
+		min-width: 60vmin;
+		min-height: 60vmin;
+		max-height: 100%;
 		aspect-ratio: 1;
 		user-select: none;
 	}

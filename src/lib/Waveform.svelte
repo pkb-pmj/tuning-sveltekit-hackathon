@@ -85,5 +85,15 @@
 </script>
 
 <div bind:this={div}>
-	<canvas bind:this={canvas} />
+	<canvas height="100" bind:this={canvas} />
 </div>
+
+<style>
+	div {
+		position: relative;
+		height: 100px;
+	}
+	canvas {
+		position: absolute;
+	}
+</style>
