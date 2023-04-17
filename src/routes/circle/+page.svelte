@@ -1,8 +1,6 @@
 <script lang="ts">
 	import ChromaticCircle from '$lib/ChromaticCircle.svelte';
-	import List from '$lib/guide/List.svelte';
-	import ListItem from '$lib/guide/ListItem.svelte';
-	import { data as meantone } from '$lib/guide/data/meantone';
+	import Tabs from '$lib/guide/Tabs.svelte';
 	import { intervalTree } from '$lib/intervalTree';
 	import { keyboardStore } from '$lib/keyboard';
 
@@ -16,11 +14,7 @@
 		<ChromaticCircle {tree} {keyboard} />
 	</div>
 	<div class="list">
-		<List {tree} {root}>
-			{#each meantone as { text, data }}
-				<ListItem json={data}>{text}</ListItem>
-			{/each}
-		</List>
+		<Tabs {tree} {root} />
 	</div>
 </div>
 
@@ -37,5 +31,10 @@
 	}
 	.list {
 		flex: 1;
+		padding: 0.5em;
+		--hue: 0;
+		--saturation: 0%;
+		--value: 90%;
+		--alpha: 0.4;
 	}
 </style>
