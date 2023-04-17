@@ -12,6 +12,12 @@ It _does work_ on mobile, but desktop experience is definitely better.
 
 Also it's the first time I've been working alone non-stop on a single project for four weeks straight, in the then mostly unknown territory of SVG, CSS transforms and animations, Web Audio, and other not-your-typical-web-app things. And it's my first MVP-kind-of-finished public project. I guess hackathons can really boost your abilities in quite a short time :D
 
+# Why does it even exist in the first place though
+
+Because understanding tuning systems is hard.
+
+My main priority is creating useful things, I'm interested and quite well versed in both music and maths, and I'm learning (not only) web development - a good combo to end up doing something like this. And the Svelte Hackathon to give me a reason to finally do it xD
+
 # How to
 
 I didn't have time to make a good self-explanatory UI or tutorial, so... just click random things until you figure it out.
