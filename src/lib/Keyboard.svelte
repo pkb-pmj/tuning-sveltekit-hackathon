@@ -6,21 +6,21 @@
 </script>
 
 <div class="container">
-	<Key column={1} key={$keyboard[0]} />
-	<Key column={2} key={$keyboard[2]} />
-	<Key column={3} key={$keyboard[4]} />
-	<Key column={4} key={$keyboard[5]} />
-	<Key column={5} key={$keyboard[7]} />
-	<Key column={6} key={$keyboard[9]} />
-	<Key column={7} key={$keyboard[11]} />
+	<Key column={1} bind:key={$keyboard[0]} />
+	<Key column={2} bind:key={$keyboard[2]} />
+	<Key column={3} bind:key={$keyboard[4]} />
+	<Key column={4} bind:key={$keyboard[5]} />
+	<Key column={5} bind:key={$keyboard[7]} />
+	<Key column={6} bind:key={$keyboard[9]} />
+	<Key column={7} bind:key={$keyboard[11]} />
 	<div class="black left">
-		<Key key={$keyboard[1]} />
-		<Key key={$keyboard[3]} />
+		<Key bind:key={$keyboard[1]} />
+		<Key bind:key={$keyboard[3]} />
 	</div>
 	<div class="black right">
-		<Key key={$keyboard[6]} />
-		<Key key={$keyboard[8]} />
-		<Key key={$keyboard[10]} />
+		<Key bind:key={$keyboard[6]} />
+		<Key bind:key={$keyboard[8]} />
+		<Key bind:key={$keyboard[10]} />
 	</div>
 </div>
 
@@ -35,6 +35,7 @@
 		padding: var(--gap);
 		column-gap: var(--gap);
 		border-radius: calc(var(--radius) + var(--gap));
+		user-select: none;
 	}
 	.black {
 		grid-row: 1 / 2;

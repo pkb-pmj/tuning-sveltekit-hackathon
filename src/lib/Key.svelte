@@ -3,32 +3,57 @@
 
 	export let column: number = 0;
 	export let key: Key;
+
+	function press(event: PointerEvent) {
+		if (event.buttons & 1) {
+			key.clicked = true;
+		}
+	}
+	function release() {
+		key.clicked = false;
+	}
 </script>
 
 <div
+	on:pointerdown={press}
+	on:pointerup={release}
+	on:pointerenter={press}
+	on:pointerleave={release}
+	on:pointercancel={release}
 	style:grid-column-start={column}
 	class={column ? 'white' : 'black'}
-	class:pressed={key.pressed}
+	class:pressed={key.pressed || key.clicked}
 >
 	<span>{key.label}</span>
+	<span>{key.code}</span>
 </div>
 
 <style>
 	div {
 		display: flex;
-		justify-content: center;
-		align-items: end;
+		flex-flow: column;
+		justify-content: end;
+		align-items: center;
 		padding-bottom: 1em;
 		transition: background-color 0.1s;
 		pointer-events: all;
 	}
 	span {
+		display: block;
 		flex: 0 0 min-content;
 		font-size: 1.6em;
 		font-family: sans-serif;
 	}
+	span:last-child {
+		color: #888;
+		font-size: 1.2em;
+	}
 	.white span {
 		font-size: 2em;
+	}
+	.white span:last-child {
+		color: #888;
+		font-size: 1.5em;
 	}
 	.white {
 		grid-row: 1 / -1;

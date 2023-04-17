@@ -7,6 +7,7 @@
 	import { keyboardStore } from '$lib/keyboard';
 	import Toolbar from '$lib/Toolbar.svelte';
 	import { setContext } from 'svelte';
+	import Keyboard from '$lib/Keyboard.svelte';
 
 	const tree = intervalTree();
 	const keyboard = keyboardStore();
@@ -46,6 +47,7 @@
 		</div>
 	</div>
 </div>
+<Keyboard {keyboard} />
 
 <style>
 	.wrapper {

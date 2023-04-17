@@ -15,7 +15,7 @@ export function createActiveStores(tree: IntervalTree, keyboard: KeyboardStore) 
 		tree
 			.filter((node) => {
 				const i = Math.round(node.absInterval.modUnsigned().log2valueOf() * 12 + 12) % 12;
-				return keyboard[i].pressed;
+				return keyboard[i].pressed || keyboard[i].clicked;
 			})
 			.sort(cmp),
 	);

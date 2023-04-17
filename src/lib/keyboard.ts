@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { writable, type Readable } from 'svelte/store';
+import { writable, type Readable, type Writable } from 'svelte/store';
 
 export const keyLabelsEn = [
 	'C',
@@ -35,17 +35,28 @@ const codeToKey = Object.fromEntries(keyCodes.split('').map((char, i) => [`Key${
 
 export interface Key {
 	label: string;
+	code: string;
 	pressed: boolean;
+	clicked: boolean;
 }
 
-export type KeyboardStore = Readable<Key[]>;
+export type KeyboardStore = Writable<Key[]>;
 
-export function keyboardStore() {
-	const internal = keyLabelsEn.map((label) => ({ label, pressed: false }));
+export function keyboardStore(): KeyboardStore {
+	const internal: Key[] = keyLabelsEn.map((label, i) => ({
+		label,
+		code: keyCodes[i],
+		pressed: false,
+		clicked: false,
+	}));
 
-	const reset = () => internal.forEach((key) => (key.pressed = false));
+	const reset = () =>
+		internal.forEach((key) => {
+			key.pressed = false;
+			key.clicked = false;
+		});
 
-	const { set, subscribe } = writable(internal, (set) => {
+	const { set, subscribe, update } = writable(internal, (set) => {
 		if (browser) {
 			window.addEventListener('keydown', onKeyDown);
 			window.addEventListener('keyup', onKeyUp);
@@ -76,5 +87,5 @@ export function keyboardStore() {
 		set(internal);
 	};
 
-	return { subscribe };
+	return { set, subscribe, update };
 }
