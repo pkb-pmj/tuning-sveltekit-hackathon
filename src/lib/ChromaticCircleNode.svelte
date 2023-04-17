@@ -34,9 +34,7 @@
 	$: isSelected = $selected.includes(node);
 </script>
 
-{#if isPlaying}
-	<SoundGenerator {frequency} />
-{/if}
+<SoundGenerator {frequency} {isPlaying} />
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <g class="wrapper" on:click|stopPropagation={onClick} class:isPlaying class:isSelected>
 	<g class="transform" style:transform="rotate({absAngle}turn)">
