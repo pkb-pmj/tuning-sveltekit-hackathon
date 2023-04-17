@@ -4,10 +4,10 @@
 </script>
 
 <foreignObject
-	width="100px"
+	width="200px"
 	height="20px"
 	font-size="14px"
-	style:transform="rotate({angle}turn) translate({radius}px) rotate(90deg) translate(-15px, -2.5px)
+	style:transform="rotate({angle}turn) translate({radius}px) rotate(90deg) translate(-30px, -2.5px)
 	scale(0.3)"
 >
 	<div>
