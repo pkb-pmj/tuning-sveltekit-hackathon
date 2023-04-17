@@ -83,6 +83,7 @@
 	}
 
 	function pushToHistory(_tree: Node[]) {
+		console.debug(root.toJSON());
 		if (historyFlag) {
 			history.push(root.toJSON());
 		} else {
